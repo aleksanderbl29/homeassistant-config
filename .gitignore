@@ -11,7 +11,7 @@
 /hadashboards/
 /intents/
 # /themes/
-/custom_components
+# /custom_components
 /deps
 /hacs
 
