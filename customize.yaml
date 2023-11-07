@@ -1,0 +1,16 @@
+sensor.norreport:
+  friendly_name: "Letbanestop: Nørreport"
+  icon: mdi:train-car-passenger-door-open
+sensor.ostbanetorvet:
+  friendly_name: "Letbanestop: Østbanetorvet"
+  icon: mdi:train-car-passenger-door-open
+binary_sensor.hue_motion_sensor_1_motion:
+  friendly_name: "Entre bevægelse"
+
+
+## Media players
+media_player.apple_tv:
+  friendly_name: "Apple TV"
+  icon: phu:apple-tv
+media_player.unnamed_room:
+  icon: phu:sonos-one

@@ -1,0 +1,10 @@
+# Example configuration.yaml
+
+hue_entre_motion_temperature:
+  source: sensor.hue_motion_sensor_1_temperature_2
+  unit_of_measurement: °C
+  unique_id: 82475982034857459832045397
+  precision: 1
+  data_points:
+    - [26.1, 24.4]
+    - [0, 0]

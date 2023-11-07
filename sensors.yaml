@@ -1,0 +1,523 @@
+## Summeret elforbrug
+- platform: template
+  sensors:
+    skrivebord_sum_w:
+      value_template: "{{ states('sensor.skrivebord_hojre_w') | float + states('sensor.skrivebord_venstre_w') | float + states('sensor.skrivebord_vindue_w') | float}}"
+      unit_of_measurement: W
+      device_class: power
+    fjernsyn_sum_w:
+      value_template: "{{ states('sensor.vindueskarm_hojre_w') |float + states('sensor.vindueskarm_venstre_w') | float }}"
+      unit_of_measurement: W
+      device_class: power
+    fallesareal_sum_w:
+      value_template: "{{ states('sensor.entre_lampe_w') |float + states('sensor.skab_lightstrip_w') | float }}"
+      unit_of_measurement: W
+      device_class: power
+    kontor_sum_w:
+      value_template: "{{ states('sensor.aleksanders_vaerelse_w') |float + states('sensor.loftslampe_w') |float + states('sensor.skrivebord_sum_w') |float + states('sensor.fjernsyn_sum_w') |float + states('sensor.keylight_w') |float}}"
+      unit_of_measurement: W
+      device_class: power
+      friendly_name: Kontor samlet strømforbrug
+      unique_id: 51684786531866546466-464-6854-6-46-54
+    stue_sum_w:
+      value_template: "{{ states('sensor.sonos_one_sl_w') |float + states('sensor.arkitektlampe_w') |float + states('sensor.stue_loftslampe_w') |float + states('sensor.sofa_filament_w') |float}}"
+      friendly_name: Stue samlet strømforbrug
+      unique_id: 5164163653153-231523-253464646-5532332
+      unit_of_measurement: W
+      device_class: power
+    hele_lejligheden_w:
+      value_template: "{{ states('sensor.kontor_sum_w') |float + states('sensor.fallesareal_sum_w') |float + states('sensor.stue_sum_w') |float}}"
+      unique_id: 5168478653184-5646515-6841348651356413
+      friendly_name: Hele lejligheden samlet strømforbrug
+      unit_of_measurement: W
+      device_class: power
+
+- platform: time_date
+  display_options:
+  - 'time'
+
+- platform: template
+  sensors:
+    total_energy:
+      friendly_name: Total  Energy
+      unit_of_measurement: kWh
+      value_template: >
+        {% set ns = namespace(states=[]) %}
+        {% for s in states.sensor %}
+          {% if s.object_id.endswith('kwh') %}
+            {% set ns.states = ns.states + [ s.state | float ] %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.states | sum | round(2) }}
+
+
+
+## Energyscore
+- platform: energyscore
+  name: Total Energy Score
+  unique_id: AC816DB0-868A-431C-92AE-CBD46A864DC5
+  price_entity: sensor.electricity_cost
+  energy_entity: sensor.total_energy
+
+
+
+
+## Strømpris
+- platform: template
+  sensors:
+    electricity_cost:
+      friendly_name: "Electricity Cost"
+      device_class: monetary
+      unit_of_measurement: "kr/kWh"
+      unique_id: "8734578934759347598"
+      value_template: >
+        {{ (1.25 * float(states('sensor.eloverblik_tariff_sum'))) + float(states('sensor.nordpool_kwh_dk1_dkk_3_095_025')) }}
+      attribute_templates:
+        today: >
+          {% if state_attr('sensor.eloverblik_tariff_sum', 'hourly') and state_attr('sensor.nordpool_kwh_dk1_dkk_3_095_025', 'today') %}
+            {% set ns = namespace (prices=[]) %}
+            {% for h in range(24) %}
+              {% set ns.prices = ns.prices + [(1.25 * float(state_attr('sensor.eloverblik_tariff_sum', 'hourly')[h]) + float(state_attr('sensor.nordpool_kwh_dk1_dkk_3_095_025', 'today')[h])) | round(5)] %}
+            {% endfor %}
+            {{ ns.prices }}
+          {% endif %}
+        tomorrow: >
+          {% if state_attr('sensor.eloverblik_tariff_sum', 'hourly') and state_attr('sensor.nordpool_kwh_dk1_dkk_3_095_025', 'tomorrow') %}
+            {% set ns = namespace (prices=[]) %}
+            {% for h in range(24) %}
+              {% set ns.prices = ns.prices + [(1.25 * float(state_attr('sensor.eloverblik_tariff_sum', 'hourly')[h]) + float(state_attr('sensor.nordpool_kwh_dk1_dkk_3_095_025', 'tomorrow')[h])) | round(5)] %}
+            {% endfor %}
+            {{ ns.prices }}
+          {% endif %}
+
+## Macbook Pro tilsluttet skærm
+- platform: template
+  sensors:
+    mbp_display:
+      friendly_name: MBP Display ID
+      unique_id: 46513654865321658431563514a563d1sa5
+      value_template: >
+        {% set displays = state_attr('sensor.macbook_pro_displays', 'Display Names') %}
+        {% for display in displays %}
+          {{ display }}
+        {% endfor %}
+
+## Alene hjemme sensor
+- platform: template
+  sensors:
+    nogen_hjemme:
+      value_template: >
+        {% if is_state('device_tracker.aleksander_iphone_wifi', 'home') or is_state('device_tracker.astrid_iphone_wifi', 'home') %} home {% else %} not_home {% endif %}
+      attribute_templates:
+        antal_hjemme: >
+          {% set people = [
+              states.device_tracker.aleksander_iphone_wifi,
+              states.device_tracker.astrid_iphone_wifi,
+              ] %}
+          {{ people | selectattr('state','eq','home') | list | count }}
+        home_alone: >
+          {% if is_state_attr('sensor.nogen_hjemme', 'antal_hjemme', 1) %}
+          Alene hjemme
+          {% else %}
+          Ikke alene
+          {% endif %}
+
+# template sensor for sidste opdatering af vækkeur
+- platform: template
+  sensors:
+    wakeup_change:
+      value_template: "{{states.input_datetime.vaekkur.last_changed}}"
+      device_class: timestamp
+
+## Bevægelse i entre
+- platform: template
+  sensors:
+    motion_entre:
+      value_template: "{{states.binary_sensor.hue_motion_sensor_1_motion.last_changed}}"
+      device_class: timestamp
+      attribute_templates:
+        as_timestamp: "{{as_timestamp(states.binary_sensor.hue_motion_sensor_1_motion.last_changed)}}"
+
+- platform: template
+  sensors:
+    hour:
+      friendly_name: "Hour"
+      value_template: "{{ now().hour }}"
+
+## nighttime
+#- platform: template
+# sensors:
+#    nighttime:
+#      entity_id: sensor.night
+#      value_template: "{% if is_state('sun.sun', 'below_horizon') %}On{% else %}{% if now() > today_at("21:00") %}On{% else %}Off{% endif %}{% endif %}"
+
+## Darkness
+- platform: template
+  sensors:
+    darkness:
+      unique_id: darkness
+      value_template: >
+        {% if is_state('sun.sun', 'below_horizon') %}
+        on
+        {% elif states('sensor.hour') |float > 20 %}
+        on
+        {% elif is_state('weather.ostboulevarden_1', 'cloudy') %}
+        on
+        {% else %}
+        off
+        {% endif %}
+
+## Rejseplanen
+- platform: rejseplanen
+  name: "Østbanetorvet"
+  stop_id: 860014801
+  direction:
+    - "Aarhus H"
+- platform: rejseplanen
+  name: "Nørreport"
+  stop_id: 860430301
+  direction:
+    - "Aarhus H"
+    - "Odder"
+- platform: rejseplanen
+  name: "Stop: Nørreport"
+  stop_id: 860430301
+- platform: rejseplanen
+  name: "Stop: Østbanetorvet"
+  stop_id: 860014801
+
+## Nordpool
+- platform: nordpool
+  VAT: True
+  currency: "DKK"
+  low_price_cutoff: 0.95
+  region: "DK1"
+  precision: 3
+  price_type: kWh
+
+## Nighttime
+- platform: template
+  sensors:
+    nightstate:
+      friendly_name: Night State
+      value_template: "{% if is_state('sun.sun', 'below_horizon') %}1{% else %}0{% endif %}"
+
+## Antal tændte lys
+## Den bedste måde at tælle lys på!!!
+- platform: template
+  sensors:
+    stue_lys:
+      friendly_name: "Lys ON Stue"
+      unique_id: lys_ON_stue
+      value_template: >
+        {% set lights = [
+            states.light.loftslampe_2,
+            states.light.arkitektlampe,
+            states.light.sofa_filament,
+            ] %}
+        {{ lights | selectattr('state','eq','on') | list | count }}
+    lights_on_home:
+      friendly_name: "Lys ON i alt"
+      unique_id: lights_on_home
+      value_template: >
+        {% set lights = [
+            states.light.skrivebord_hojre,
+            states.light.skrivebord_venstre,
+            states.light.skrivebord_vindue,
+            states.light.loftslampe,
+            states.light.vindueskarm_hojre,
+            states.light.vindueskarm_venstre,
+            states.light.loftslampe_2,
+            states.light.arkitektlampe,
+            states.light.sofa_filament,
+            states.light.loftslampe_3,
+            states.light.skab_lightstrip,
+            states.light.astrids_lampe,
+            states.light.rgb_paere_2,
+            states.light.elgato_cw31j1a04120,
+            states.light.kladeskab
+            ] %}
+        {{ lights | selectattr('state','eq','on') | list | count }}
+    kontor_lys:
+      friendly_name: "Lys ON kontor"
+      value_template: >
+        {% set lights = [
+            states.light.skrivebord_hojre,
+            states.light.skrivebord_venstre,
+            states.light.skrivebord_vindue,
+            states.light.loftslampe,
+            states.light.vindueskarm_hojre,
+            states.light.vindueskarm_venstre,
+            states.light.astrids_lampe,
+            states.light.rgb_paere_2,
+            states.light.elgato_cw31j1a04120
+            ] %}
+        {{ lights | selectattr('state','eq','on') | list | count }}
+    kokken_lys:
+      friendly_name: "Lys ON køkken"
+      value_template: >
+        {% set lights = [
+            states.light.skab_lightstrip
+            ] %}
+        {{ lights | selectattr('state','eq','on') | list | count }}
+    sovevaerelse_lys:
+      friendly_name: "Lys ON soveværelse"
+      value_template: >
+        {% set lights = [
+            states.light.kladeskab
+            ] %}
+        {{ lights | selectattr('state','eq','on') | list | count }}
+
+
+
+## Room labels
+- platform: template
+  sensors:
+      kontor_label:
+        value_template: >
+          {% if is_state('media_player.aleksanders_vaerelse', 'playing') %}
+            {{ state_attr('media_player.aleksanders_vaerelse', 'media_title') }} - {{ state_attr('media_player.aleksanders_vaerelse', 'media_artist') }}
+          {% else %}
+            {% if is_state('media_player.kontor_tv', 'playing') %}
+              {{ state_attr('media_player.kontor_tv', 'media_title') }} - {{ state_attr('media_player.kontor_tv', 'app_name') }}
+            {% else %}
+              {% if states["sensor.kontor_lys"].state | int > 1 %}
+                {{states["sensor.kontor_lys"].state}} lys er tændt
+              {% else %}
+                {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+              {% endif %}
+            {% endif %}
+          {% endif %}
+      stue_room_label:
+        value_template: >
+          {% if is_state('media_player.apple_tv', 'playing') and is_state('media_player.sonos_one_sl', 'playing') and state_attr('media_player.apple_tv', 'media_title') != None and state_attr('media_player.apple_tv', 'media_content_type') != 'music' %}
+            {{ state_attr('media_player.apple_tv', 'media_title') }} - {{ state_attr('media_player.apple_tv', 'app_name') }}
+          {% else %}
+            {% if is_state('media_player.apple_tv', 'playing') and state_attr('media_player.apple_tv', 'media_content_type') != 'music' and state_attr('media_player.apple_tv', 'media_title') != None %}
+              {{ state_attr('media_player.apple_tv', 'media_title') }} - {{ state_attr('media_player.apple_tv', 'app_name') }}
+            {% else %}
+              {% if is_state('media_player.sonos_one_sl', 'playing') and state_attr('media_player.sonos_one_sl', 'media_title') != None %}
+                {{ state_attr('media_player.sonos_one_sl', 'media_title') }} - {{ state_attr('media_player.sonos_one_sl', 'media_artist') }}
+              {% else %}
+                {%- if states["sensor.stue_lys"].state | int > 1 -%}
+                  {{states["sensor.stue_lys"].state}} lys er tændt
+                {%- else -%}
+                  {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+                {%- endif -%}
+              {%- endif -%}
+            {% endif %}
+          {% endif %}
+      entre_room_label:
+        value_template: >
+          {%- if as_timestamp(now()) - state_attr('sensor.motion_entre', 'as_timestamp') < 5 -%}
+            Nylig bevægelse
+          {%- else -%}
+            {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+          {%- endif -%}
+        attribute_templates:
+          time: '{{ now().second }}'
+      kitchen_room_label:
+        value_template: >
+          {%- if is_state('media_player.unnamed_room', 'playing') -%}
+            {{state_attr('media_player.unnamed_room', 'media_title')}} - {{state_attr('media_player.unnamed_room', 'media_artist') }}
+          {% else %}
+            {%- if states["sensor.kokken_lys"].state | int > 1 -%}
+              {{states["sensor.kokken_lys"].state}} lys er tændt
+            {%- else -%}
+              {{states["sensor.compensation_sensor_hue_motion_sensor_1_temperature_2"].state}} °C
+            {%- endif -%}
+          {% endif %}
+      bedroom_room_label:
+        value_template: >
+          {%- if is_state('media_player.sonos_roam_kokken', 'playing') -%}
+            {{state_attr('media_player.sonos_roam_kokken', 'media_title')}} - {{state_attr('media_player.sonos_roam_kokken', 'media_artist') }}
+          {% else %}
+            {%- if states["sensor.sovevaerelse_lys"].state | int > 1 -%}
+              {{states["sensor.sovevaerelse_lys"].state}} lys er tændt
+            {%- else -%}
+              {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+            {%- endif -%}
+          {% endif %}
+
+
+
+## Eloverblik
+- platform: template
+  sensors:
+    eloverblik_long_term_stats:
+      value_template: "{{ states('sensor.eloverblik_energy_total')}}"
+      attribute_templates:
+        last_change: "{{ state_attr('sensor.eloverblik_energy_total', 'metering_date') }}"
+      unit_of_measurement: kWh
+      device_class: energy
+- platform: template
+  sensors:
+    eloverblik_last_change:
+      value_template: "{{ state_attr('sensor.eloverblik_energy_total', 'metering_date') }}"
+
+
+#######################################
+#######################################
+#######################################
+
+## System monitor
+
+- platform: systemmonitor
+  resources:
+    - type: disk_use_percent
+      arg: /
+    - type: memory_use_percent
+    - type: memory_use
+    - type: memory_free
+    - type: swap_use
+    - type: load_1m
+    - type: load_5m
+    - type: load_15m
+    - type: last_boot
+    - type: processor_use
+    - type: processor_temperature
+
+
+
+# ## Sonos
+# - platform: template
+#   sensors:
+#     kontor_sonos_alone:
+#       value_template: >
+#         {% if is_state_attr('media_player.aleksanders_vaerelse', 'group_members', ['media_player.aleksanders_vaerelse']) %}
+#         alone
+#         {% else %}
+#         grouped
+#         {% endif %}
+# - platform: template
+#   sensors:
+#     kitchen_sonos_alone:
+#       value_template: >
+#         {% if is_state_attr('media_player.sonos_roam_kokken', 'group_members', ['media_player.sonos_roam_kokken']) %}
+#         alone
+#         {% else %}
+#         grouped
+#         {% endif %}
+# - platform: template
+#   sensors:
+#     stue_sonos_alone:
+#       value_template: >
+#         {% if is_state_attr('media_player.sonos_one_sl', 'group_members', ['media_player.sonos_one_sl']) %}
+#         alone
+#         {% else %}
+#         grouped
+#         {% endif %}
+
+
+## Room labels
+# - platform: template
+#   sensors:
+#       kontor_label:
+#         value_template: >
+#           {% if is_state('sensor.kontor_sonos_alone', 'alone') %}
+#             {% if is_state('media_player.aleksanders_vaerelse', 'playing') %}
+#             {{ state_attr('media_player.aleksanders_vaerelse', 'media_title') }} - {{ state_attr('media_player.aleksanders_vaerelse', 'media_artist') }}
+#             {% else %}
+#               {%- if is_state('sensor.kontor_lys', '0') -%}
+#                 {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#               {%- else -%}
+#                 {{states["sensor.kontor_lys"].state}} lys er tændt
+#               {%- endif -%}
+#             {% endif %}
+#           {% else %}
+#             {% if not is_state('sensor.kontor_lys', '0') %}
+#               {% if is_state('media_player.aleksanders_vaerelse', 'playing') %}
+#                 {% if is_state('input_boolean.room_label_timer', 'off') %}
+#                   {{ state_attr('media_player.aleksanders_vaerelse', 'media_title') }} - {{ state_attr('media_player.aleksanders_vaerelse', 'media_artist') }}
+#                 {% else %}
+#                   {{states["sensor.kontor_lys"].state}} lys er tændt
+#                 {% endif %}
+#               {% else %}
+#                 {{states["sensor.kontor_lys"].state}} lys er tændt
+#               {% endif %}
+#             {% else %}
+#               {% if is_state('input_boolean.room_label_timer', 'off') %}
+#                 {% if is_state('media_player.aleksanders_vaerelse', 'playing') %}
+#                   {{ state_attr('media_player.aleksanders_vaerelse', 'media_title') }} - {{ state_attr('media_player.aleksanders_vaerelse', 'media_artist') }}
+#                 {% else %}
+#                   {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#                 {% endif %}
+#               {% else %}
+#                 {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#               {% endif %}
+#             {% endif %}
+#           {% endif %}
+# - platform: template
+#   sensors:
+#       stue_room_label:
+#         value_template: >
+#           {% if is_state('sensor.stue_sonos_alone', 'alone') %}
+#             {% if is_state('media_player.sonos_one_sl', 'playing') %}
+#               {{ state_attr('media_player.sonos_one_sl', 'media_title') }} - {{ state_attr('media_player.sonos_one_sl', 'media_artist') }}
+#             {% else %}
+#               {%- if is_state('sensor.stue_lys', '0') -%}
+#                 {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#               {%- else -%}
+#                 {{states["sensor.stue_lys"].state}} lys er tændt
+#               {%- endif -%}
+#             {% endif %}
+#           {% else %}
+#             {% if not is_state('sensor.stue_lys', '0') %}
+#               {% if is_state('media_player.sonos_one_sl', 'playing') %}
+#                 {% if is_state('input_boolean.room_label_timer', 'on') %}
+#                   {{ state_attr('media_player.sonos_one_sl', 'media_title') }} - {{ state_attr('media_player.sonos_one_sl', 'media_artist') }}
+#                 {% else %}
+#                   {{states["sensor.stue_lys"].state}} lys er tændt
+#                 {% endif %}
+#               {% else %}
+#                 {{states["sensor.stue_lys"].state}} lys er tændt
+#               {% endif %}
+#             {% else %}
+#               {% if is_state('input_boolean.room_label_timer', 'on') %}
+#                 {% if is_state('media_player.sonos_one_sl', 'playing') %}
+#                   {{ state_attr('media_player.sonos_one_sl', 'media_title') }} - {{ state_attr('media_player.sonos_one_sl', 'media_artist') }}
+#                 {% else %}
+#                   {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#                 {% endif %}
+#               {% else %}
+#                 {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#               {% endif %}
+#             {% endif %}
+#           {% endif %}
+# - platform: template
+#   sensors:
+#       entre_room_label:
+#         value_template: >
+#           {%- if as_timestamp(now()) - state_attr('sensor.motion_entre', 'as_timestamp') < 5 -%}
+#             Nylig bevægelse
+#           {%- else -%}
+#             {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C
+#           {%- endif -%}
+#         attribute_templates:
+#           time: '{{ now().second }}'
+# - platform: template
+#   sensors:
+#       kitchen_room_label:
+#         value_template: >
+#           {%- if is_state('media_player.sonos_roam_kokken', 'unavailable') -%}
+#             {{states["sensor.compensation_sensor_hue_motion_sensor_1_temperature_2"].state}} °C
+#           {%- else -%}
+#             {%- if is_state('media_player.sonos_roam_kokken', 'idle') -%}
+#               {{states["sensor.compensation_sensor_hue_motion_sensor_1_temperature_2"].state}} °C
+#             {%- else -%}
+#               {%- if is_state('media_player.sonos_roam_kokken', 'playing') -%}
+#                 {%- if state_attr('media_player.sonos_roam_kokken', 'media_title') |string == "None" -%}
+#                   {{states["sensor.compensation_sensor_hue_motion_sensor_1_temperature_2"].state}} °C
+#                 {%- else -%}
+#                   {{state_attr('media_player.sonos_roam_kokken', 'media_title')}} - {{state_attr('media_player.sonos_roam_kokken', 'media_artist') }}
+#                 {%- endif -%}
+#               {%- else -%}
+#                 {{states["sensor.compensation_sensor_hue_motion_sensor_1_temperature_2"].state}} °C
+#               {%- endif -%}
+#             {%- endif -%}
+#           {%- endif -%}
+# - platform: template
+#   sensors:
+#       bedroom_room_label:
+#         value_template: >
+#           {{states["sensor.hue_motion_sensor_1_temperature"].state}} °C

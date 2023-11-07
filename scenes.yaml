@@ -1,0 +1,268 @@
+- id: '1682939915186'
+  name: Soveværelse wind down
+  entities:
+    light.kladeskab:
+      min_color_temp_kelvin: 2702
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 370
+      effect_list:
+      - Ocean
+      - Romance
+      - Sunset
+      - Party
+      - Fireplace
+      - Cozy
+      - Forest
+      - Pastel Colors
+      - Wake up
+      - Bedtime
+      - Warm White
+      - Daylight
+      - Cool white
+      - Night light
+      - Focus
+      - Relax
+      - True colors
+      - TV time
+      - Plantgrowth
+      - Spring
+      - Summer
+      - Fall
+      - Deepdive
+      - Jungle
+      - Mojito
+      - Club
+      - Christmas
+      - Halloween
+      - Candlelight
+      - Golden white
+      - Pulse
+      - Steampunk
+      - Rhythm
+      supported_color_modes:
+      - color_temp
+      - rgbww
+      friendly_name: Klædeskab
+      supported_features: 4
+      color_mode: rgbww
+      brightness: 89
+      hs_color:
+      - 11.09
+      - 82.745
+      rgb_color:
+      - 255
+      - 83
+      - 44
+      xy_color:
+      - 0.646
+      - 0.325
+      rgbww_color:
+      - 255
+      - 0
+      - 0
+      - 0
+      - 255
+      state: 'on'
+  icon: mdi:wind-power
+  metadata: {}
+- id: '1682958816529'
+  name: Soveværelse Relax
+  entities:
+    light.kladeskab:
+      min_color_temp_kelvin: 2702
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 370
+      effect_list:
+      - Ocean
+      - Romance
+      - Sunset
+      - Party
+      - Fireplace
+      - Cozy
+      - Forest
+      - Pastel Colors
+      - Wake up
+      - Bedtime
+      - Warm White
+      - Daylight
+      - Cool white
+      - Night light
+      - Focus
+      - Relax
+      - True colors
+      - TV time
+      - Plantgrowth
+      - Spring
+      - Summer
+      - Fall
+      - Deepdive
+      - Jungle
+      - Mojito
+      - Club
+      - Christmas
+      - Halloween
+      - Candlelight
+      - Golden white
+      - Pulse
+      - Steampunk
+      - Rhythm
+      supported_color_modes:
+      - color_temp
+      - rgbww
+      color_mode: rgbww
+      brightness: 128
+      hs_color:
+      - 29.417
+      - 80.784
+      rgb_color:
+      - 255
+      - 150
+      - 49
+      xy_color:
+      - 0.57
+      - 0.389
+      friendly_name: Klædeskab
+      supported_features: 4
+      rgbww_color:
+      - 199
+      - 100
+      - 0
+      - 0
+      - 255
+      state: 'on'
+  icon: hue:scene-relax
+  metadata: {}
+- id: '1682958925628'
+  name: Soveværelse Read
+  entities:
+    light.kladeskab:
+      min_color_temp_kelvin: 2702
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 370
+      effect_list:
+      - Ocean
+      - Romance
+      - Sunset
+      - Party
+      - Fireplace
+      - Cozy
+      - Forest
+      - Pastel Colors
+      - Wake up
+      - Bedtime
+      - Warm White
+      - Daylight
+      - Cool white
+      - Night light
+      - Focus
+      - Relax
+      - True colors
+      - TV time
+      - Plantgrowth
+      - Spring
+      - Summer
+      - Fall
+      - Deepdive
+      - Jungle
+      - Mojito
+      - Club
+      - Christmas
+      - Halloween
+      - Candlelight
+      - Golden white
+      - Pulse
+      - Steampunk
+      - Rhythm
+      supported_color_modes:
+      - color_temp
+      - rgbww
+      color_mode: color_temp
+      brightness: 255
+      hs_color:
+      - 28.391
+      - 65.659
+      rgb_color:
+      - 255
+      - 166
+      - 87
+      xy_color:
+      - 0.526
+      - 0.387
+      friendly_name: Klædeskab
+      supported_features: 4
+      color_temp_kelvin: 2702
+      color_temp: 370
+      state: 'on'
+  icon: hue:scene-read
+  metadata: {}
+- id: '1685236656607'
+  name: Soveværelse helt ned
+  entities:
+    light.kladeskab:
+      min_color_temp_kelvin: 2702
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 370
+      effect_list:
+      - Ocean
+      - Romance
+      - Sunset
+      - Party
+      - Fireplace
+      - Cozy
+      - Forest
+      - Pastel Colors
+      - Wake up
+      - Bedtime
+      - Warm White
+      - Daylight
+      - Cool white
+      - Night light
+      - Focus
+      - Relax
+      - True colors
+      - TV time
+      - Plantgrowth
+      - Spring
+      - Summer
+      - Fall
+      - Deepdive
+      - Jungle
+      - Mojito
+      - Club
+      - Christmas
+      - Halloween
+      - Candlelight
+      - Golden white
+      - Pulse
+      - Steampunk
+      - Rhythm
+      supported_color_modes:
+      - color_temp
+      - rgbww
+      friendly_name: Klædeskab
+      supported_features: 4
+      color_mode: rgbww
+      brightness: 26
+      hs_color:
+      - 11.09
+      - 82.745
+      rgb_color:
+      - 255
+      - 83
+      - 44
+      rgbww_color:
+      - 255
+      - 0
+      - 0
+      - 0
+      - 255
+      xy_color:
+      - 0.646
+      - 0.325
+      state: 'on'
+  icon: mdi:wind-power
+  metadata: {}

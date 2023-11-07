@@ -1,0 +1,65 @@
+
+- platform: template
+  sensors:
+    updater_core:
+      friendly_name: Core
+      device_class: problem
+      value_template: "{{ states('sensor.core_updates') }}"
+      attribute_templates:
+        installed_version: "{{ state_attr('sensor.core_updates', 'installed_version') }}"
+        latest_version: "{{ state_attr('sensor.core_updates', 'latest_version') }}"
+
+    updater_supervisor:
+      friendly_name: Supervisor
+      device_class: problem
+      value_template: "{{ states('sensor.supervisor_updates') }}"
+      attribute_templates:
+        installed_version: "{{ state_attr('sensor.supervisor_updates', 'installed_version') }}"
+        latest_version: "{{ state_attr('sensor.supervisor_updates', 'latest_version') }}"
+
+    updater_os:
+      friendly_name: OS
+      device_class: problem
+      value_template: "{{ states('sensor.os_updates') }}"
+      attribute_templates:
+        installed_version: "{{ state_attr('sensor.os_updates', 'installed_version') }}"
+        latest_version: "{{ state_attr('sensor.os_updates', 'latest_version') }}"
+
+    updater_addons:
+      friendly_name: Supervisor Add-ons
+      device_class: problem
+      value_template: "{{ states('sensor.addons_updates')|int(0) != 0 }}"
+      attribute_templates:
+        addons: "{{ state_attr('sensor.addons_updates', 'addons') }}"
+
+    updater_hacs:
+      friendly_name: HACS Integrations
+      device_class: problem
+      value_template: "{{ states('sensor.hacs')|int(0) != 0 }}"
+      attribute_templates:
+        repositories: "{{ state_attr('sensor.hacs', 'repositories') }}"
+
+- platform: group
+  name: "Updates"
+  entities:
+    - binary_sensor.updater_core
+    - binary_sensor.updater_supervisor
+    - binary_sensor.updater_os
+    - binary_sensor.updater_addons
+    - binary_sensor.updater_hacs
+
+## Macbook Pro tilsluttet G9
+- platform: template
+  sensors:
+    g9_mbp:
+      friendly_name: MBP Samsung G9
+      device_class: connectivity
+      value_template: "{% if is_state('sensor.mbp_display', 'LC49G95T') or is_state('sensor.mbp_display', 'LC49G95T Indbygget Retina-skærm') %} true {% endif %}"
+
+
+#{% set displays = state('sensor.mbp_display') %}
+#{% for display in displays %}
+#  {% if LC49G95T in display %}
+#    true
+#  {% endif %}
+#{% endfor %}

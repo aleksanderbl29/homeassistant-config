@@ -1,0 +1,218 @@
+---
+### Aleksanders custom Card Person ###
+abl_card_person:
+  template:
+    - "icon_info_bg"
+    - "ulm_translation_engine"
+    - "ulm_custom_popup_abl_person"
+    - "ulm_custom_card_abl_person_language_variables"
+  variables:
+    ulm_card_person_abl_use_entity_picture: "[[[ return variables.ulm_card_abl_person_use_entity_picture ]]]"
+    ulm_card_person_abl_icon: "mdi:face-man"
+    ulm_address: ""
+  triggers_update: "all"
+  show_label: true
+  show_name: true
+  label: >
+    [[[
+      var eta = ""
+      let state = states[variables.ulm_card_person_abl_entity].state;
+      let option = ["home", "not_home", "unavailable", "unknown"]
+      return (option.includes(state)) ? variables-ulm_translation_state : state
+    ]]]
+  name: "[[[ return states[variables.ulm_card_person_abl_entity].attributes.friendly_name ]]]"
+  entity: "[[[ return variables.ulm_card_person_abl_entity; ]]]"
+  icon: "[[[ return variables.ulm_card_person_abl_icon; ]]]"
+  show_entity_picture: "[[[ return variables.ulm_card_person_abl_use_entity_picture ]]]"
+  entity_picture:
+    "[[[ return variables.ulm_card_person_abl_use_entity_picture ? states[variables.ulm_card_person_abl_entity].attributes.entity_picture\
+    \ : null ]]]"
+  styles:
+    icon:
+      - color: "rgba(var(--color-theme),0.9)"
+      - width: >
+          [[[
+            return !variables.ulm_card_person_abl_use_entity_picture ? "20px" : "42px";
+          ]]]
+      - place-self: >
+          [[[
+            return !variables.ulm_card_person_abl_use_entity_picture ? "center" : "stretch stretch";
+          ]]]
+    custom_fields:
+      notification:
+        - border-radius: "50%"
+        - position: "absolute"
+        - left: "38px"
+        - top: "8px"
+        - height: "16px"
+        - width: "16px"
+        - border: "2px solid var(--card-background-color)"
+        - font-size: "12px"
+        - line-height: "14px"
+        - background-color: >
+            [[[
+              return (states[variables.ulm_card_person_abl_entity].state !== 'home') ? "rgba(var(--color-green),1)" : "rgba(var(--color-blue),1)";
+            ]]]
+      info:
+        - position: "absolute"
+        - right: "6px"
+        - top: "6px"
+        - width: "25px"
+        - height: "25px"
+  custom_fields:
+    notification: >
+      [[[
+        if (states[variables.ulm_card_person_abl_entity].state == 'home') {
+            return '<ha-icon icon="mdi:home-variant" style="width: 10px; height: 10px; color: var(--primary-background-color);"></ha-icon>';
+        } else {
+            for (let st in states) {
+                if (st.startsWith("zone.")) {
+                    if (states[st]?.attributes?.persons?.includes(variables.ulm_card_person_abl_entity) && !states[st]?.attributes?.passive) {
+                        var icon = states[st].attributes.icon !== null ? states[st].attributes.icon : 'mdi:help-circle';
+                        return '<ha-icon icon="' + icon + '" style="width: 10px; height: 10px; color: var(--primary-background-color);"></ha-icon>';
+                    }
+                }
+            }
+        }
+        return '<ha-icon icon="mdi:home-minus" style="width: 10px; height: 10px; color: var(--primary-background-color);"></ha-icon>';
+      ]]]
+    info: |
+      [[[
+        if(variables.ulm_card_person_abl_battery){
+        const battery = Math.round(states[variables.ulm_card_person_abl_battery].state/1);
+        const radius = 20.5; const circumference = radius * 2 * Math.PI;
+        return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}"
+        stroke="green" stroke-width="3" fill="none"
+        style="transform: rotate(-90deg); transform-origin: 50% 50%;
+        stroke-dasharray: ${circumference};
+        stroke-dashoffset: ${circumference - battery / 100 * circumference};" />
+        <text x="50%" y="54%" fill="var(--primary-text-color)" font-size="16" font-weight= "bold"
+        text-anchor="middle" alignment-baseline="middle">
+        ${battery}<tspan font-size="10">%</tspan></text></svg>`;
+        }
+      ]]]
+
+
+ulm_custom_popup_abl_person:
+  tap_action:
+    action: "fire-dom-event"
+    browser_mod:
+      service: "browser_mod.popup"
+      data:
+        title: "[[[ return states[variables.ulm_card_person_abl_entity].attributes.friendly_name ]]]"
+        style:
+          $: >
+            [[[
+              if (hass.themes.theme.includes("desktop")){
+                var dialog = `
+                  .mdc-dialog__surface{
+                    border-radius: var(--border-radius) !important;
+                  }
+                `;
+              } else{
+                var dialog = "";
+              }
+              return `
+                *{
+                  --secondary-background-color: none !important;
+                }
+                ${dialog}
+              `;
+            ]]]
+          hui-vertical-stack-card:
+            $: >
+              button-card {
+                align-self: center;
+                padding: 0.2em 0 2.3em 0;
+              }
+              hui-entities-card{
+                padding: 0.8em 1.4em;
+              }
+            $hui-entities-card$: >
+              ha-card{
+                box-shadow: none;
+              }
+            $hui-history-graph-card$: >
+              .content {
+                padding: 0 2.4em !important;
+              }
+              ha-card{
+                box-shadow: none;
+              }
+            $hui-glance-card$: >
+              ha-card{
+                box-shadow: none;
+              }
+            $hui-map-card:
+              $: >
+                ha-icon-button {
+                  color: rgba(var(--color-blue),1);
+                }
+              $ha-map:
+                $: >
+                  .leaflet-control-attribution {
+                    display: none;
+                  }
+                  .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+                    border: 2px solid rgba(var(--color-blue),0.4) !important;
+                  }
+                  .leaflet-bar a {
+                    background-color: rgba(var(--color-blue),0.2) !important;
+                    color: rgba(var(--color-blue),1) !important;
+                  }
+                  .leaflet-bar a:first-child {
+                    border-bottom: 2px solid rgba(var(--color-blue),0.4) !important;
+                  }
+                  .leaflet-pane.leaflet-tile-pane {
+                    filter: contrast(95%);
+                  }
+        content:
+          type: vertical-stack
+          cards:
+            - type: entities
+              entities:
+                - entity: "[[[ return variables.ulm_card_person_abl_entity; ]]]"
+                  secondary_info: last-changed
+            - type: history-graph
+              entities:
+                - entity: "[[[ return variables.ulm_card_person_abl_entity; ]]]"
+            - show_name: true
+              show_icon: true
+              show_state: true
+              type: glance
+              entities:
+                - entity: "[[[ return variables.ulm_card_person_abl_wifi_tracker; ]]]"
+                  name: WiFi
+                  icon: mdi:wifi
+                - entity: "[[[ return variables.ulm_card_person_abl_gps_tracker; ]]]"
+                  name: GPS
+                  icon: mdi:map-marker
+              state_color: true
+            - type: map
+              default_zoom: 16
+              entities:
+                - entity: "[[[ return [variables.ulm_card_person_abl_gps_tracker]; ]]]"
+              aspect_ratio: 2x1
+              dark_mode: false
+
+
+ulm_custom_card_abl_person_language_variables:
+  variables:
+    ulm_custom_card_abl_person_home: "Home"
+    ulm_custom_card_abl_person_not_home: "Away"
+    ulm_custom_card_abl_person_findmy: "Find my phone"
+
+##########################
+## Variables to include ##
+##########################
+
+# ulm_card_person_abl_gps_tracker
+# ulm_card_person_abl_wifi_tracker
+# ulm_card_person_abl_entity
+# ulm_card_person_abl_use_entity_picture
+# ulm_card_person_abl_icon
+# ulm_card_person_abl_eta
+# ulm_card_person_abl_battery
+# ulm_card_person_abl_focus
+# ulm_card_person_abl_home_boolean
+# ulm_card_person_abl_eta

@@ -1,0 +1,116 @@
+title: "Network"
+path: "network"
+cards:
+  - type: "custom:button-card"
+    template: chip_back
+    variables:
+      ulm_chip_back_path: iphone_home
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Admin
+      - type: 'custom:button-card'
+        template: card_homeassistant_updates
+        variables:
+          ulm_card_homeassistant_entity: "binary_sensor.updates"
+          ulm_card_homeassistant_core: "sensor.core_updates"
+          ulm_card_homeassistant_supervisor: "sensor.supervisor_updates"
+          ulm_card_homeassistant_os: "sensor.os_updates"
+      - type: 'custom:button-card'
+        template: card_generic_swap
+        entity: sensor.hacs
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Dev / Test
+        label: Device trackers
+
+      # - type: 'custom:button-card'
+      #   template: card_binary_sensor
+      #   variables:
+      #     ulm_card_binary_sensor_alert: true
+      #     ulm_show_last_changed: false
+      #   entity: device_tracker.ping_aleksander_iphone
+      # - type: 'custom:button-card'
+      #   template: card_binary_sensor
+      #   variables:
+      #     ulm_card_binary_sensor_alert: true
+      #     ulm_show_last_changed: false
+      #   entity: device_tracker.aleksander_iphone_wifi
+      # - type: 'custom:button-card'
+      #   template: card_binary_sensor
+      #   variables:
+      #     ulm_card_binary_sensor_alert: true
+      #     ulm_show_last_changed: false
+      #   entity: device_tracker.astrid_iphone_wifi
+      # - type: 'custom:button-card'
+      #   template: card_binary_sensor
+      #   variables:
+      #     ulm_card_binary_sensor_alert: true
+      #     ulm_show_last_changed: false
+      #   entity: device_tracker.ping_astrid_iphone
+
+
+      - type: history-graph
+        entities:
+          - entity: device_tracker.aleksander_iphone_wifi
+          - entity: device_tracker.ping_aleksander_iphone
+          - entity: device_tracker.astrid_iphone_wifi
+          - entity: device_tracker.ping_astrid_iphone
+
+  # - type: vertical-stack
+  #   cards:
+  #     - type: "custom:button-card"
+  #       template: card_title
+  #       name: Device tracker
+  #     - type: custom:auto-entities
+  #       card:
+  #         type: entities
+  #       filter:
+  #         include:
+  #           - domain: device_tracker
+  #         exclude: []
+
+
+  # - type: vertical-stack
+  #   cards:
+  #     - type: "custom:button-card"
+  #       template: card_title
+  #       name: HomeLab
+  #       label: Uptime Kuma
+  #     - type: custom:auto-entities
+  #       card:
+  #         type: entities
+  #       filter:
+  #         include:
+  #           - domain: binary_sensor
+  #             integration: uptime_kuma
+  #         exclude: []
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+    filter:
+      include:
+        - area: "Homelab"
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+    filter:
+      include:
+        - state: "unavailable"
+    sort:
+      method: last_changed
+      reverse: true
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+    filter:
+      include:
+        - area: "Admin"

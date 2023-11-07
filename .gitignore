@@ -1,19 +1,19 @@
 # ignore hidden folders
-/config/.storage
-/config/.cloud
-/config/.google.token
+/.storage
+/.cloud
+/.google.token
 
 # ignore some directories.
-/config/icloud/
-/config/www/
-/config/tts/
-/config/deps/
-/config/hadashboards/
-/config/intents/
-/config/themes/
-/config/custom_components
-/config/deps
-/config/hacs
+/icloud/
+/www/
+/tts/
+/deps/
+/hadashboards/
+/intents/
+# /themes/
+/custom_components
+/deps
+/hacs
 
 # ignore any of these files no matter where they are using double *
 **.DS_Store
@@ -51,7 +51,7 @@
 **.db-wal
 **.sqlite
 **__pycache__
-**phue.conf 
+**phue.conf
 **ios.conf
 **pyozw.sqlite
 **ipchange.yaml

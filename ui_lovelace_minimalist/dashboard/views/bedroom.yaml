@@ -1,0 +1,98 @@
+title: "Soveværelse"
+path: "bedroom"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: iphone_home
+
+  - type: vertical-stack
+    cards:
+    - type: "custom:button-card"
+      template: card_title
+      name: Soveværelse
+    - type: vertical-stack
+      cards:
+        - type: "custom:button-card"
+          template:
+            - card_input_datetime
+          entity: input_datetime.vaekkur
+          variables:
+            ulm_card_input_datetime_name: "Vækkeur"
+        - type: conditional
+          conditions:
+            - entity: input_boolean.ur_sat
+              state: 'off'
+          card:
+            type: horizontal-stack
+            cards:
+              - type: "custom:button-card"
+                template: card_input_boolean
+                entity: input_boolean.sleep_mode
+                ulm_card_input_boolean_name: Sleep mode
+              - type: "custom:button-card"
+                template: card_input_boolean
+                entity: input_boolean.ur_sat
+                ulm_card_input_boolean_name: Vækkeur sat
+        - type: conditional
+          conditions:
+            - entity: input_boolean.ur_sat
+              state: 'on'
+          card:
+            type: horizontal-stack
+            cards:
+              - type: "custom:button-card"
+                template: card_input_boolean
+                entity: input_boolean.sleep_mode
+                ulm_card_input_boolean_name: Sleep mode
+              - type: "custom:button-card"
+                template: card_input_boolean
+                entity: input_boolean.sleep_music_mode
+                ulm_card_input_boolean_name: Sove-musik
+
+    - type: "custom:button-card"
+      template: card_light
+      entity: light.kladeskab
+      variables:
+        ulm_card_light_enable_slider: true
+        ulm_card_light_enable_color: true
+        ulm_card_light_icon: mdi:led-strip-variant
+        ulm_card_light_enable_popup: false
+        ulm_card_light_enable_collapse: false
+        ulm_card_light_enable_horizontal: false
+        ulm_card_light_name: Klædeskab
+
+    - type: vertical-stack
+      cards:
+        - type: custom:mini-media-player
+          entity: media_player.sonos_roam_kokken
+          volume_stateless: false
+          group: false
+          sound_mode: full
+          icon: phu:sonos-move
+          artwork: cover
+          hide:
+            power: true
+        - type: "custom:button-card"
+          template: card_battery
+          entity: sensor.sonos_roam_kokken_battery
+          variables:
+            ulm_card_battery_battery_level_danger: 20
+            ulm_card_battery_battery_level_warning: 40
+            ulm_card_battery_color_battery_level_ok: var(--google-blue)
+            ulm_card_battery_charger_type_entity_id: binary_sensor.sonos_roam_kokken_power
+
+    - entity: fan.xiaomi_miio_fan
+      name: Vind
+      type: "custom:fan-xiaomi"
+      platform: xiaomi_miio_fan
+    - type: "custom:button-card"
+      template: card_fan
+      entity: fan.xiamo_miio_fan
+      variables:
+        ulm_card_fan_enable_slider: true
+        ulm_card_fan_color: "blue"
+        ulm_card_fan_force_background_color: true
+        ulm_card_fan_name: Vind

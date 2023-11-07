@@ -1,0 +1,376 @@
+title: "Graphs"
+path: "graphs"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: iphone_home
+
+      - type: "custom:button-card"
+        color_type: blank-card
+
+      - type: "custom:button-card"
+        template: chip_power_consumption
+        variables:
+          ulm_chip_electric_price: sensor.nordpool_kwh_dk1_dkk_3_095_025
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Entre"
+      - type: horizontal-stack
+        cards:
+          - type: 'custom:button-card'
+            template: card_graph
+            entity: sensor.hue_motion_sensor_1_temperature
+            variables:
+              ulm_card_graph_color: "var(--google-red)"
+              ulm_card_graph_name: Temperatur
+              ulm_card_graph_entity: sensor.hue_motion_sensor_1_temperature
+              ulm_card_graph_type: fill
+              ulm_card_graph_hours: 48
+              ulm_card_graph_group_by: interval
+          - type: 'custom:button-card'
+            template: card_graph
+            entity: sensor.hue_motion_sensor_1_illuminance
+            variables:
+              ulm_card_graph_color: "var(--google-white)"
+              ulm_card_graph_name: Lys
+              ulm_card_graph_entity: sensor.hue_motion_sensor_1_illuminance
+              ulm_card_graph_type: fill
+              ulm_card_graph_hours: 16
+              ulm_card_graph_group_by: interval
+      - type: "custom:button-card"
+        template: card_title
+        label: "Køkken"
+      - type: horizontal-stack
+        cards:
+          - type: 'custom:button-card'
+            template: card_graph
+            entity: sensor.compensation_sensor_hue_motion_sensor_1_temperature_2
+            variables:
+              ulm_card_graph_color: "var(--google-red)"
+              ulm_card_graph_name: Temperatur
+              ulm_card_graph_entity: sensor.compensation_sensor_hue_motion_sensor_1_temperature_2
+              ulm_card_graph_type: fill
+              ulm_card_graph_hours: 48
+              ulm_card_graph_group_by: interval
+          - type: 'custom:button-card'
+            template: card_graph
+            entity: sensor.hue_motion_sensor_1_illuminance_2
+            variables:
+              ulm_card_graph_color: "var(--google-white)"
+              ulm_card_graph_name: Lys
+              ulm_card_graph_entity: sensor.hue_motion_sensor_1_illuminance_2
+              ulm_card_graph_type: fill
+              ulm_card_graph_hours: 16
+              ulm_card_graph_group_by: interval
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Energi"
+      - type: custom:vertical-stack-in-card
+        style: |
+          ha-card {
+          box-shadow: 2px;
+          background: transparent:
+          margin: 15px:
+          }
+        cards:
+          - type: custom:apexcharts-card
+            now:
+              show: true
+            graph_span: 48h
+            apex_config:
+              chart:
+                height: 300px
+              legend:
+                showForSingleSeries: true
+              plotOptions:
+                bar:
+                  borderRadius: 2
+              yaxis:
+                min: 0
+                max: 6
+                decimalsInFloat: 3
+                tickAmount: 10
+                forceNiceScale: true
+              xaxis:
+                labels:
+                  datetimeFormatter:
+                    hour: H
+            all_series_config:
+              show:
+                offset_in_name: false
+            header:
+              title: ' '
+              show: true
+              show_states: true
+              colorize_states: true
+            span:
+              start: day
+              offset: +0h
+            series:
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                type: column
+                color: orange
+                float_precision: 3
+                stroke_width: 0
+                name: Dagens timepris
+                show:
+                  in_header: false
+                  legend_value: false
+                  extremas: false
+                data_generator: |
+                  return entity.attributes.raw_today.map((start, index) => {
+                    return [new Date(start["start"]).getTime(), entity.attributes.raw_today[index]["value"]];
+                  });
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                type: column
+                name: Morgendagens timepris
+                show:
+                  in_header: false
+                  legend_value: false
+                  extremas: true
+                data_generator: |
+                  return entity.attributes.raw_tomorrow.map((start, index) => {
+                    return [new Date(start["start"]).getTime(), entity.attributes.raw_tomorrow[index]["value"]];
+                  });
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                name: Timepris lige nu
+                color: orange
+                type: column
+                show:
+                  in_chart: false
+                float_precision: 3
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                attribute: average
+                type: column
+                color: white
+                float_precision: 3
+                stroke_width: 2
+                name: Dagens gennemsnits pris
+                group_by:
+                  duration: 1d
+                show:
+                  in_chart: false
+                  legend_value: false
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                attribute: max
+                type: column
+                color: red
+                float_precision: 3
+                stroke_width: 2
+                name: Dagens højeste pris
+                group_by:
+                  duration: 1d
+                show:
+                  in_chart: false
+                  legend_value: false
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                attribute: min
+                type: column
+                color: green
+                float_precision: 3
+                stroke_width: 2
+                name: Dagens laveste pris
+                group_by:
+                  duration: 1d
+                show:
+                  in_chart: false
+                  legend_value: false
+              - entity: sensor.eloverblik_tariff_sum
+                color: purple
+                float_precision: 2
+                stroke_width: 2
+                name: Tariffer
+                group_by:
+                  duration: 1d
+                show:
+                  in_chart: false
+                  legend_value: false
+              - entity: sensor.nordpool_kwh_dk1_dkk_3_095_025
+                attribute: tomorrow
+                type: column
+                color: var(--energy-grid-consumption-color)
+                float_precision: 3
+                stroke_width: 2
+                name: Gennemsnit i morgen
+                group_by:
+                  duration: 48h
+                show:
+                  in_chart: false
+                  legend_value: false
+
+      - type: custom:mini-graph-card
+        entities:
+          - entity: sensor.electricity_cost
+            show_state: true
+            state_adaptive_color: true
+          - entity: sensor.nightstate
+            name: Night
+            show_line: false
+            show_points: false
+            show_legend: false
+            y_axis: secondary
+            color: gray
+        align_icon: left
+        align_state: left
+        align_header: left
+        name: Elpris
+        icon: mdi:cash-multiple
+        hours_to_show: 168
+        points_per_hour: 0.25
+        animate: true
+        height: 100
+        font_size: 70
+        lower_bound_secondary: 0
+        upper_bound_secondary: 1
+        color_thresholds:
+          - value: 0.5
+            color: '#8FB79A'
+          - color: '#538D8D'
+          - color: '#E7BB41'
+          - color: '#E76F51'
+          - value: 4
+            color: '#FF1F1F'
+        show:
+          fill: true
+          name_adaptive_color: true
+          icon_adaptive_color: true
+          state_adaptive_color: true
+          points: false
+          labels: false
+          labels_secondary: false
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Letbanen"
+      - type: custom:vertical-stack-in-card
+        cards:
+          - show_name: true
+            show_icon: false
+            show_state: true
+            type: glance
+            entities:
+              - entity: sensor.norreport
+                name: Nørreport
+                card_mod:
+                  style: |
+                    :host {
+                      color: teal;
+                      }
+              - entity: sensor.ostbanetorvet
+                name: Østbanetorvet
+                card_mod:
+                  style: |
+                    :host {
+                      color: orange;
+                      }
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.nightstate
+                name: Nat
+                show_line: true
+                show_points: false
+                show_legend: false
+                show_state: false
+                y_axis: secondary
+                color: gray
+                show_fill: true
+              - entity: sensor.norreport
+                state_adaptive_color: true
+                show_state: true
+                color: teal
+                show_fill: false
+              - entity: sensor.ostbanetorvet
+                show_state: true
+                state_adaptive_color: true
+                color: orange
+                show_fill: false
+            align_icon: left
+            align_state: center
+            smoothing: true
+            aggregate_func: sum
+            hours_to_show: 2.5
+            points_per_hour: 120
+            line_width: 2
+            animate: true
+            lower_bound: 0
+            lower_bound_secondary: 0
+            upper_bound_secondary: 1
+            height: 75
+            show:
+              fill: true
+              graph: line
+              state: false
+              name: false
+              icon: false
+              labels: false
+              labels_secondary: false
+              points: false
+              legend: false
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Ude / Hjemme"
+      - type: custom:mini-graph-card
+        entities:
+          - entity: sensor.nightstate
+            name: Nat
+            show_line: true
+            show_points: false
+            show_legend: false
+            y_axis: secondary
+            color: gray
+            show_fill: true
+          - entity: input_boolean.aleksander_hjemme
+            state_adaptive_color: true
+            color: green
+            show_fill: false
+          - entity: input_boolean.astrid_hjemme
+            state_adaptive_color: true
+            color: blue
+            show_fill: false
+        align_icon: left
+        align_state: center
+        smoothing: true
+        aggregate_func: sum
+        hours_to_show: 10
+        points_per_hour: 8.4
+        line_width: 2
+        state_map:
+          - value: "off"
+            label: Away
+          - value: "on"
+            label: Hjemme
+        animate: true
+        upper_bound: 1.2
+        lower_bound: -0.2
+        lower_bound_secondary: 0
+        upper_bound_secondary: 1
+        height: 75
+        show:
+          fill: true
+          graph: line
+          state: false
+          name: false
+          icon: false
+          labels: false
+          labels_secondary: false
+          points: false
+      - type: history-graph
+        entities:
+          - entity: person.aleksander
+          - entity: person.astrid
+        hours_to_show: 10
+

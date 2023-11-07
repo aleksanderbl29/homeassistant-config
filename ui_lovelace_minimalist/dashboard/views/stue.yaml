@@ -1,0 +1,159 @@
+title: "iPhone Stue"
+path: "stue"
+cards:
+  - type: "custom:button-card"
+    template: chip_back
+    variables:
+      ulm_chip_back_path: iphone_home
+  - type: vertical-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_title
+            name: Stue
+            label: "Media"
+
+          # - type: custom:mini-media-player
+          #   entity: media_player.samsung_7_series_40
+          #   name: Fjernsyn
+          #   icon: mdi:television
+          #   max_volume: 25
+          #   hide:
+          #     power: false
+
+          - type: custom:mini-media-player
+            entity: media_player.apple_tv
+            name: Apple TV
+            icon: phu:apple-tv-box
+            artwork: cover
+            max_volume: 30
+            hide:
+              power: false
+
+          - type: custom:mini-media-player
+            entity: media_player.sonos_one_sl
+            volume_stateless: false
+            group: false
+            sound_mode: full
+            artwork: cover
+            hide:
+              power: true
+            max_volume: '40'
+
+  - type: vertical-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_title
+            label: "Lys"
+
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                  - type: vertical-stack
+                    cards:
+                      - type: custom:gap-card
+                        height: 12
+
+                      - type: "custom:button-card"
+                        template: card_light
+                        entity: light.sofa_filament
+                        variables:
+                          ulm_card_light_enable_slider: false
+                          ulm_card_light_enable_color: true
+                          ulm_card_light_icon: hue:bulb-filament-hung
+                          ulm_card_light_enable_popup: true
+                          ulm_card_light_enable_horizontal: false
+                          ulm_card_light_name: Filament
+
+                  - type: "custom:button-card"
+                    template:
+                      - card_scenes_welcome
+                    variables:
+                      entity_1:
+                        entity_id: "scene.stue_read"
+                        icon: "mdi:book-open-page-variant-outline"
+                        icon_color: "yellow"
+                        name: "Read"
+                        color: "yellow"
+                      entity_2:
+                        entity_id: "scene.stue_relax"
+                        icon: "mdi:sofa"
+                        icon_color: "blue"
+                        name: "Relax"
+                        color: "blue"
+                      entity_3:
+                        entity_id: "scene.stue_nightlight"
+                        icon: "mdi:weather-night"
+                        icon_color: "purple"
+                        name: "Nat"
+                        color: "purple"
+
+              - type: horizontal-stack
+                cards:
+                  - type: "custom:button-card"
+                    template: card_light
+                    entity: light.loftslampe_2
+                    variables:
+                      ulm_card_light_enable_slider: true
+                      ulm_card_light_enable_color: true
+                      ulm_card_light_icon: mdi:ceiling-light
+                      ulm_card_light_enable_popup: true
+                      ulm_card_light_enable_collapse: true
+                      ulm_card_light_enable_horizontal: false
+                      ulm_card_light_name: Loftslampe
+
+                  - type: "custom:button-card"
+                    template: card_light
+                    entity: light.arkitektlampe
+                    variables:
+                      ulm_card_light_enable_slider: true
+                      ulm_card_light_enable_color: true
+                      ulm_card_light_icon: mdi:desk-lamp
+                      ulm_card_light_enable_popup: true
+                      ulm_card_light_enable_collapse: true
+                      ulm_card_light_enable_horizontal: false
+                      ulm_card_light_name: Arkitektlampe
+
+  - type: vertical-stack
+    cards:
+
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_title
+            label: "Energiforbrug"
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.stue_loftslampe_w
+                name: Loftslampe
+                color: yellow
+              - entity: sensor.arkitektlampe_w
+                name: Arkitektlampe
+                color: blue
+              - entity: sensor.sofa_filament_w
+                name: Filament
+                color: maroon
+              - entity: sensor.nightstate
+                name: Night
+                show_line: false
+                show_points: false
+                show_legend: false
+                y_axis: secondary
+                color: gray
+            hours_to_show: 0.083
+            points_per_hour: 722
+            lower_bound_secondary: 0
+            upper_bound_secondary: 1
+            aggregate_func: avg
+            animate: true
+            show:
+              labels: false
+              points: false
+              labels_secondary: false
+              name: false
+              icon: false
+              state: false

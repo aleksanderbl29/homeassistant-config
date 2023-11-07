@@ -1,0 +1,158 @@
+fade_volume:
+  alias: Fade the volume of a media player
+  mode: restart
+  fields:
+    target_player:
+      name: Target media player
+      description: Target media player of volume fade.
+      required: true
+      example: media_player.lounge_sonos
+      selector:
+        entity:
+          domain: media_player
+    target_volume:
+      name: Target volume
+      description: Volume the media play will be at the end of the fade duration.
+      required: true
+      default: 0.5
+      example: '0.5'
+      selector:
+        number:
+          max: 1
+          min: 0
+          step: 0.01
+          mode: slider
+    duration:
+      name: Fade duration
+      description: Length of time in seconds the fade should take.
+      required: true
+      default: 5
+      example: '5'
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100000
+          unit_of_measurement: s
+    curve:
+      name: Fade curve algorithm
+      description: Shape of the fade curve to apply.
+      required: true
+      default: logarithmic
+      example: logarithmic
+      selector:
+        select:
+          options:
+          - logarithmic
+          - bezier
+          - linear
+  variables:
+    steps_per_second: 10
+    total_steps: '{{ (steps_per_second * duration) | int(0) }}'
+    start_volume: '{{ state_attr(target_player, ''volume_level'') | float(0) }}'
+    start_diff: '{{ (target_volume - start_volume) | float(0) }}'
+  sequence:
+  - repeat:
+      while:
+      - condition: template
+        value_template: '{{ repeat.index < total_steps }}'
+      - condition: template
+        value_template: '{{ ((state_attr(target_player, "volume_level") - target_volume)
+          | abs) > 0.001 }}'
+      sequence:
+      - service: media_player.volume_set
+        data_template:
+          entity_id: '{{ target_player }}'
+          volume_level: "{% set t = repeat.index / total_steps %} {% if curve == 'logarithmic'
+            %}\n  {{ (start_volume + (t / (1 + (1 - t))) * start_diff) | float(0)
+            }}\n{% elif curve == 'bezier' %}\n  {{ (start_volume + (t * t * (3 - 2
+            * t)) * start_diff) | float(0) }}\n{% else %}\n  {{ (start_volume + t
+            * start_diff) | float(0) }}\n{% endif %}\n"
+      - delay: '00:00:00.1'
+  - service: media_player.volume_set
+    data_template:
+      entity_id: '{{ target_player }}'
+      volume_level: '{{ target_volume }}'
+  icon: mdi:tune-vertical
+turn_off_all_lights:
+  alias: Turn off all lights
+  sequence:
+  - service: light.turn_off
+    data:
+      transition: 3
+    target:
+      area_id:
+      - aleksanders_vaerelse
+      - entre
+      - stue
+      - kokken
+      - sovevaerelse
+  - service: notify.mobile_app_aleksanders_iphone_13
+    data:
+      title: Alle lys er slukket
+      message: "Hav en god dag! \U0001F60E"
+  mode: single
+  icon: mdi:lightbulb-multiple-off-outline
+xtodo_create_todo:
+  alias: Create new TODO
+  sequence:
+  - if:
+      condition: template
+      value_template: '{{todo is not defined}}'
+    then:
+    - stop: No "todo" variable defined.
+      error: true
+  - service: input_text.set_value
+    entity_id: input_text.xtodo_todos
+    data:
+      value: '{%- if states(''input_text.xtodo_todos'') |length != 0 -%} {{states(''input_text.xtodo_todos'')}}\n
+        {%- endif -%} {{ todo }}'
+'1668785471461':
+  alias: Text-to-Speech on Sonos
+  use_blueprint:
+    path: Talvish/sonos_say.yaml
+    input:
+      tts_language: da
+dark_mode:
+  alias: Dark mode
+  sequence:
+  - service: hue.activate_scene
+    data:
+      dynamic: true
+      speed: 2
+      brightness: 240
+      transition: 2
+    target:
+      entity_id: scene.aleksanders_vaerelse_soho
+  - service: light.turn_on
+    data:
+      transition: 2
+      color_name: chartreuse
+      brightness_pct: 100
+    target:
+      entity_id: light.rgb_paere_2
+  - service: light.turn_on
+    data:
+      transition: 2
+      color_name: aqua
+      brightness_pct: 100
+    target:
+      entity_id: light.astrids_lampe
+  mode: restart
+  icon: mdi:theme-light-dark
+'1688590826851':
+  alias: 'Notify: Slack Notification Template'
+  sequence:
+  - service: notify.aleks_home_lab
+    data:
+      message: Fallback Text
+      target: '#updates'
+      title: TEST
+      data:
+        blocks:
+        - type: section
+          text:
+            type: mrkdwn
+            text: This is a mrkdwn section block *this is bold*, and ~this is crossed
+              out~, and <https://google.com|this is a link>
+  mode: single

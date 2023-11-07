@@ -1,0 +1,359 @@
+## config til popup for abl_person_card
+type: "vertical-stack"
+cards:
+  - type: "entities"
+    entities:
+      - entity: "[[[ return variables.ulm_card_person_abl_entity; ]]]"
+        secondary_info: "last-changed"
+  - type: "history-graph"
+    entities:
+      - entity: "[[[ return variables.ulm_card_person_abl_entity; ]]]"
+  - type: "glance"
+    show_state: false
+    entities:
+      - entity: "[[[ return variables.ulm_card_person_abl_wifi_tracker; ]]]"
+        name: "WiFi"
+        icon: "mdi:wifi"
+        style: &state >
+          state-badge{
+            color: {{ 'rgba(var(--color-greeb),1)' if is_state(config.entity, 'home') }};
+            filter: {{ 'opacity(100%)' if is_state(config.entity, 'home') else 'opacity(40%)'}};
+          }
+      - entity: "[[[ return variables.ulm_card_abl_person_gps_tracker; ]]]"
+        name: "GPS"
+        icon: "mdi:map-marker"
+        style: &state >
+          state-badge{
+            color: {{ 'rgba(var(--color-green),1)' if is_state(config.entity, 'home') }};
+            filter: {{ 'opacity(100%)' if is_state(config.entity, 'home') else 'opacity(40%)'}};
+          }
+  - type: "map"
+    aspect_ratio: "12x10"
+    default_zoom: 16
+    entities:
+      - entity: "[[[ return [variables.ulm_card_abl_person_gps_tracker]; ]]]"
+
+
+
+### Grafer fra graphs.yaml
+- type: horizontal-stack
+  cards:
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.hue_motion_sensor_1_temperature
+          state_adaptive_color: true
+        - entity: sensor.nightstate
+          name: Night
+          show_line: false
+          show_points: false
+          show_legend: false
+          y_axis: secondary
+          color: gray
+      align_icon: left
+      align_state: left
+      align_header: left
+      name: Temperatur
+      hours_to_show: 48
+      points_per_hour: 0.875
+      animate: true
+      height: 150
+      font_size: 70
+      lower_bound_secondary: 0
+      upper_bound_secondary: 1
+      color_thresholds:
+        - value: 21
+          color: "#1034A6"
+        - color: "#412F88"
+        - color: "#722B6A"
+        - color: "#A2264B"
+        - color: "#D3212D"
+        - value: 25
+          color: "#F62D2D"
+      show:
+        fill: true
+        name_adaptive_color: true
+        icon_adaptive_color: true
+        points: false
+        labels: false
+        labels_secondary: false
+    - type: custom:mini-graph-card
+      entities:
+        - entity: sensor.hue_motion_sensor_1_illuminance
+        - entity: sensor.nightstate
+          name: Night
+          show_line: false
+          show_points: false
+          show_legend: false
+          y_axis: secondary
+          color: gray
+      align_icon: left
+      align_state: left
+      align_header: left
+      font_size: 70
+      name: Lys
+      hours_to_show: 16
+      points_per_hour: 2.625
+      animate: true
+      height: 150
+      color_thresholds:
+        - value: 0
+          color: "#1F1F1F"
+        - color: "#545454"
+        - color: "#898989"
+        - color: "#BDBEBE"
+        - value: 30
+          color: "#F2F3F3"
+      show:
+        fill: true
+        name_adaptive_color: false
+        icon_adaptive_color: false
+        points: false
+        labels: false
+        labels_secondary: false
+
+
+### Strømforbrug graf
+- type: custom:mini-graph-card
+  aggregate_func: max
+  align_icon: left
+  align_header: left
+  icon: mdi:lightning-bolt
+  color_thresholds:
+    - color: "#17DD1B"
+      value: 0
+    - color: "#f39c12"
+      value: 0.2
+    - color: "#FF5600"
+      value: 0.4
+    - color: "#c0392b"
+      value: 1
+  entities:
+    - entity: sensor.eloverblik_energy_0_1
+      name: 00-01
+    - entity: sensor.eloverblik_energy_1_2
+      name: 01-02
+    - entity: sensor.eloverblik_energy_2_3
+      name: 02-03
+    - entity: sensor.eloverblik_energy_3_4
+      name: 03-04
+    - entity: sensor.eloverblik_energy_4_5
+      name: 04-05
+    - entity: sensor.eloverblik_energy_5_6
+      name: 05-06
+    - entity: sensor.eloverblik_energy_6_7
+      name: 06-07
+    - entity: sensor.eloverblik_energy_7_8
+      name: 07-08
+    - entity: sensor.eloverblik_energy_8_9
+      name: 08-09
+    - entity: sensor.eloverblik_energy_9_10
+      name: 09-10
+    - entity: sensor.eloverblik_energy_10_11
+      name: 10-11
+    - entity: sensor.eloverblik_energy_11_12
+      name: 11-12
+    - entity: sensor.eloverblik_energy_12_13
+      name: 12-13
+    - entity: sensor.eloverblik_energy_13_14
+      name: 13-14
+    - entity: sensor.eloverblik_energy_14_15
+      name: 14-15
+    - entity: sensor.eloverblik_energy_15_16
+      name: 15-16
+    - entity: sensor.eloverblik_energy_16_17
+      name: 16-17
+    - entity: sensor.eloverblik_energy_17_18
+      name: 17-18
+    - entity: sensor.eloverblik_energy_18_19
+      name: 18-19
+    - entity: sensor.eloverblik_energy_19_20
+      name: 19-20
+    - entity: sensor.eloverblik_energy_20_21
+      name: 20-21
+    - entity: sensor.eloverblik_energy_21_22
+      name: 21-22
+    - entity: sensor.eloverblik_energy_22_23
+      name: 22-23
+    - entity: sensor.eloverblik_energy_23_24
+      name: 23-24
+  group_by: date
+  hour24: true
+  name: Strømforbrug
+  show:
+    fill: false
+    graph: bar
+    labels: false
+    legend: false
+    labels_secondary: false
+
+
+## Letbane grafer
+- type: custom:mini-graph-card
+  entities:
+    - entity: sensor.nightstate
+      name: Nat
+      show_line: true
+      show_points: false
+      show_legend: false
+      show_state: false
+      y_axis: secondary
+      color: gray
+      show_fill: true
+    - entity: sensor.norreport
+      state_adaptive_color: true
+      show_state: true
+      color: blue
+      show_fill: false
+    - entity: sensor.ostbanetorvet
+      show_state: true
+      state_adaptive_color: true
+      color: green
+      show_fill: false
+  align_icon: left
+  align_state: center
+  smoothing: true
+  aggregate_func: sum
+  hours_to_show: 2.5
+  points_per_hour: 120
+  line_width: 2
+  animate: true
+  lower_bound: 0
+  lower_bound_secondary: 0
+  upper_bound_secondary: 1
+  height: 75
+  show:
+    fill: true
+    graph: line
+    state: false
+    name: false
+    icon: false
+    labels: false
+    labels_secondary: false
+    points: false
+    legend: false
+- type: custom:mini-graph-card
+  entities:
+    - entity: sensor.nightstate
+      name: Nat
+      show_line: true
+      show_points: false
+      show_legend: false
+      show_state: false
+      y_axis: secondary
+      color: gray
+      show_fill: true
+    - entity: sensor.norreport
+      state_adaptive_color: true
+      show_state: true
+      color: blue
+      show_fill: false
+    - entity: sensor.ostbanetorvet
+      show_state: true
+      state_adaptive_color: true
+      color: green
+      show_fill: false
+  align_icon: left
+  align_state: center
+  smoothing: true
+  aggregate_func: sum
+  hours_to_show: 10
+  points_per_hour: 8.4
+  line_width: 2
+  animate: true
+  lower_bound: 0
+  lower_bound_secondary: 0
+  upper_bound_secondary: 1
+  height: 75
+  show:
+    fill: true
+    graph: line
+    state: false
+    name: false
+    icon: false
+    labels: false
+    labels_secondary: false
+    points: false
+    legend: false
+
+
+## Home Away graf
+- type: custom:mini-graph-card
+  entities:
+    - entity: sensor.nightstate
+      name: Nat
+      show_line: true
+      show_points: false
+      show_legend: false
+      y_axis: secondary
+      color: gray
+      show_fill: true
+    - entity: input_boolean.aleksander_hjemme
+      state_adaptive_color: true
+      color: green
+      show_fill: false
+    - entity: input_boolean.astrid_hjemme
+      state_adaptive_color: true
+      color: blue
+      y_axis: secondary
+      show_fill: false
+  align_icon: left
+  align_state: center
+  smoothing: true
+  aggregate_func: sum
+  hours_to_show: 30
+  points_per_hour: 2.8
+  line_width: 2
+  state_map:
+    - value: "off"
+      label: Away
+    - value: "on"
+      label: Hjemme
+  animate: true
+  lower_bound: -0.1
+  upper_bound: 1.1
+  lower_bound_secondary: 0
+  upper_bound_secondary: 1
+  height: 100
+  show:
+    fill: true
+    graph: line
+    state: false
+    name: false
+    icon: false
+    labels: false
+    labels_secondary: false
+    points: false
+
+
+
+### Køkken skab lightstrip "more info"
+- type: conditional
+  conditions:
+    - entity: light.skab_lightstrip
+      state: "on"
+  card:
+    shorten_cards: false
+    consolidate_entities: false
+    child_card: false
+    hide_header: true
+    header: ''
+    color_wheel: true
+    persist_features: false
+    brightness: false
+    color_temp: true
+    white_value: true
+    color_picker: true
+    smooth_color_wheel: true
+    speed: true
+    intensity: true
+    force_features: false
+    show_slider_percent: false
+    full_width_sliders: true
+    brightness_icon: weather-sunny
+    white_icon: file-word-box
+    temperature_icon: thermometer
+    speed_icon: speedometer
+    intensity_icon: transit-connection-horizontal
+    type: custom:light-entity-card
+    entity: light.skab_lightstrip
+    effects_list: false

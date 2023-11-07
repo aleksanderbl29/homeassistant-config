@@ -1,0 +1,296 @@
+title: "Lights"
+path: "lights"
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: "custom:button-card"
+        template: chip_back
+        variables:
+          ulm_chip_back_path: iphone_home
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: "custom:button-card"
+        template: chip_mdi_icon_state
+        variables:
+          ulm_chip_mdi_icon_state_entity: sensor.lights_on_home
+          ulm_chip_mdi_icon_state_icon: mdi:lightbulb
+
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: "Lys i hele lejligheden"
+        label: "Aleksanders Værelse"
+      - type: "custom:button-card"
+        color_type: blank-card
+      - type: 'custom:button-card'
+        template: card_script
+        variables:
+          ulm_card_script_title: Sluk lys
+          ulm_card_script_icon: 'mdi:lightbulb-multiple-off-outline'
+        tap_action:
+          action: call-service
+          service: script.turn_on
+          service_data:
+            entity_id: script.turn_off_all_lights
+    - type: horizontal-stack
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: custom:gap-card
+              height: 4
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.loftslampe
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: false
+                ulm_card_light_enable_horizontal: false
+                ulm_card_light_enable_popup: false
+                ulm_card_light_icon: mdi:ceiling-light
+        - type: vertical-stack
+          cards:
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.vindueskarm_venstre
+              variables:
+                ulm_card_light_enable_slider: false
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_icon: hue:bulb-filament
+                ulm_card_light_name: "Venstre"
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.vindueskarm_hojre
+              variables:
+                ulm_card_light_enable_slider: false
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_icon: hue:bulb-filament
+                ulm_card_light_name: "Højre"
+
+    - type: horizontal-stack
+      cards:
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.skrivebord_venstre
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Venstre"
+            ulm_card_light_icon: hue:play-bar-v
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.skrivebord_vindue
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Vindue"
+            ulm_card_light_icon: hue:play-bar
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.skrivebord_hojre
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Højre"
+            ulm_card_light_icon: hue:play-bar-v
+    - type: horizontal-stack
+      cards:
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.rgb_paere_2
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Skrivebord"
+            ulm_card_light_icon: mdi:desk
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.astrids_lampe
+          variables:
+            ulm_card_light_enable_slider: false
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Astrids lampe"
+            ulm_card_light_icon: mdi:cloud
+
+    - type: "custom:button-card"
+      template:
+        - card_scenes_welcome
+      variables:
+        entity_1:
+          entity_id: "scene.aleksanders_vaerelse_read"
+          icon: "mdi:book-open-page-variant-outline"
+          icon_color: "blue"
+          name: "Read"
+          color: "blue"
+        entity_2:
+          entity_id: "scene.aleksanders_vaerelse_relax"
+          icon: "mdi:sofa"
+          icon_color: "yellow"
+          name: "Relax"
+          color: "yellow"
+        entity_3:
+          entity_id: "scene.aleksanders_vaerelse_soho"
+          icon: "mdi:palette"
+          icon_color: "red"
+          name: "Soho"
+          color: "red"
+        entity_4:
+          entity_id: "scene.aleksanders_vaerelse_serie_i_seng"
+          icon: "mdi:weather-night"
+          icon_color: "green"
+          name: "Serie"
+          color: "green"
+        entity_5:
+          entity_id: "scene.aleksanders_vaerelse_hygge_lys"
+          icon: "mdi:balloon"
+          icon_color: "purple"
+          name: "Hygge"
+          color: "purple"
+  - type: vertical-stack
+    cards:
+    - type: "custom:button-card"
+      template: card_title
+      label: "Stue"
+    - type: vertical-stack
+      cards:
+
+      - type: horizontal-stack
+        cards:
+
+        - type: "custom:button-card"
+          template:
+            - card_scenes_welcome
+          variables:
+            entity_1:
+              entity_id: "scene.stue_read"
+              icon: "mdi:book-open-page-variant-outline"
+              icon_color: "yellow"
+              name: "Read"
+              color: "yellow"
+            entity_2:
+              entity_id: "scene.stue_relax"
+              icon: "mdi:sofa"
+              icon_color: "blue"
+              name: "Relax"
+              color: "blue"
+            entity_3:
+              entity_id: "scene.stue_nightlight"
+              icon: "mdi:weather-night"
+              icon_color: "purple"
+              name: "Nat"
+              color: "purple"
+
+        - type: vertical-stack
+          cards:
+
+          - type: custom:gap-card
+            height: 12
+
+          - type: "custom:button-card"
+            template: card_light
+            entity: light.sofa_filament
+            variables:
+              ulm_card_light_enable_slider: false
+              ulm_card_light_enable_color: true
+              ulm_card_light_icon: hue:bulb-filament-hung
+              ulm_card_light_enable_popup: true
+              ulm_card_light_enable_horizontal: false
+              ulm_card_light_name: Filament
+
+      - type: horizontal-stack
+        cards:
+
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.loftslampe_2
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_icon: mdi:ceiling-light
+            ulm_card_light_enable_popup: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_horizontal: false
+            ulm_card_light_name: Loftslampe
+
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.arkitektlampe
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_icon: mdi:desk-lamp
+            ulm_card_light_enable_popup: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_horizontal: false
+            ulm_card_light_name: Arkitektlampe
+
+  - type: vertical-stack
+    cards:
+    - type: "custom:button-card"
+      template: card_title
+      label: "Fællesareal"
+    - type: vertical-stack
+      cards:
+        - type: horizontal-stack
+          cards:
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.loftslampe_3
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_horizontal: false
+                ulm_card_light_enable_popup: false
+                ulm_card_light_icon: mdi:ceiling-light
+                ulm_card_light_name: "Loftslampe"
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.skab_lightstrip
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_icon: mdi:led-strip-variant
+                ulm_card_light_name: "Skab lightstrip"
+        - type: "custom:button-card"
+          template: "card_scenes_welcome"
+          variables:
+              entity_1:
+                entity_id: "scene.kokken_read"
+                name: "Køkken Read"
+                icon: mdi:book-open-blank-variant
+              entity_2:
+                entity_id: "scene.kokken_relax"
+                name: "Køkken Relax"
+                icon: mdi:sofa-outline
+              entity_3:
+                entity_id: "scene.entre_read"
+                name: "Entre Read"
+                icon: mdi:book-open-blank-variant
+              entity_4:
+                entity_id: "scene.entre_relax"
+                name: "Entre Relax"
+                icon: mdi:sofa-outline

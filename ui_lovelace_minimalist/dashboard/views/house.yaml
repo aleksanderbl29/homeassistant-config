@@ -1,0 +1,42 @@
+title: "house"
+path: "house"
+cards:
+  - type: "custom:button-card"
+    template: chip_back
+    variables:
+      ulm_chip_back_path: iphone_home
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Hele lejligheden
+
+      - type: "custom:button-card"
+        template: card_input_boolean
+        entity: input_boolean.guest_mode
+        name: Guest Mode
+
+      - type: custom:horizon-card
+        language: da
+        sun_elevation: true
+        timeFormat: '24h'
+        southern_fil: false
+
+      - type: custom:clock-weather-card
+        entity: weather.ostboulevarden_1
+        sun_entity: sun.sun
+        weather_icon_type: fill
+        animated_icon: true
+        forecast_days: 10
+
+      - type: gauge
+        max: 100
+        min: 0
+        needle: true
+        severity:
+          green: 75
+          yellow: 25
+          red: 0
+        entity: sensor.total_energy_score
+        name: EnergyScore

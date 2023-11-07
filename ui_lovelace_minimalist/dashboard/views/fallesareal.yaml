@@ -1,0 +1,190 @@
+title: "fællesareal"
+path: "fallesareal"
+cards:
+  - type: "custom:button-card"
+    template: chip_back
+    variables:
+      ulm_chip_back_path: iphone_home
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Fællesareal
+        label: Media
+
+      - type: vertical-stack
+        cards:
+          - type: conditional
+            conditions:
+              - entity: sensor.kontor_sonos_alone
+                state: alone
+            card:
+              type: custom:mini-media-player
+              entity: media_player.unnamed_room
+              volume_stateless: false
+              group: false
+              sound_mode: full
+              icon: mdi:soundbar
+              artwork: cover
+              hide:
+                power: true
+          - type: conditional
+            conditions:
+              - entity: sensor.kontor_sonos_alone
+                state: grouped
+            card:
+              type: vertical-stack
+              cards:
+                - type: custom:mini-media-player
+                  entity: kontor
+                  volume_stateless: false
+                  group: false
+                  icon: mdi:cast-audio
+                  sound_mode: full
+                  artwork: full-cover-fit
+                  max_volume: 25
+                  hide:
+                    power: true
+                    progress: true
+                - type: custom:mini-media-player
+                  entity: media_player.sonos_roam_kokken
+                  volume_stateless: false
+                  group: false
+                  sound_mode: full
+                  icon: mdi:soundbar
+                  name: Sonos Roam
+                  artwork: none
+                  hide:
+                    power: true
+                    name: true
+                    icon: true
+                    info: true
+                    controls: true
+                    prev: true
+                    next: true
+                    play_pause: true
+                    mute: true
+      - type: vertical-stack
+        cards:
+        - type: "custom:button-card"
+          template: card_title
+          label: "Lys"
+        - type: vertical-stack
+          cards:
+            - type: horizontal-stack
+              cards:
+                - type: "custom:button-card"
+                  template: card_light
+                  entity: light.loftslampe_3
+                  variables:
+                    ulm_card_light_enable_slider: true
+                    ulm_card_light_enable_color: true
+                    ulm_card_light_enable_collapse: true
+                    ulm_card_light_enable_horizontal: false
+                    ulm_card_light_enable_popup: false
+                    ulm_card_light_icon: mdi:ceiling-light
+                    ulm_card_light_name: "Loftslampe"
+                - type: "custom:button-card"
+                  template: card_light
+                  entity: light.skab_lightstrip
+                  variables:
+                    ulm_card_light_enable_slider: true
+                    ulm_card_light_enable_color: true
+                    ulm_card_light_enable_collapse: true
+                    ulm_card_light_enable_popup: false
+                    ulm_card_light_icon: mdi:led-strip-variant
+                    ulm_card_light_name: "Skab lightstrip"
+            - type: "custom:button-card"
+              template: "card_scenes_welcome"
+              variables:
+                  entity_1:
+                    entity_id: "scene.kokken_read"
+                    name: "Køkken Read"
+                    icon: mdi:book-open-blank-variant
+                  entity_2:
+                    entity_id: "scene.kokken_relax"
+                    name: "Køkken Relax"
+                    icon: mdi:sofa-outline
+                  entity_3:
+                    entity_id: "scene.entre_read"
+                    name: "Entre Read"
+                    icon: mdi:book-open-blank-variant
+                  entity_4:
+                    entity_id: "scene.entre_relax"
+                    name: "Entre Relax"
+                    icon: mdi:sofa-outline
+
+  - type: vertical-stack
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_title
+            label: "Sensor"
+          - type: horizontal-stack
+            cards:
+              - type: 'custom:button-card'
+                template: card_graph
+                entity: sensor.hue_motion_sensor_1_temperature
+                variables:
+                  ulm_card_graph_color: "var(--google-red)"
+                  ulm_card_graph_name: Entre
+                  ulm_card_graph_entity: sensor.hue_motion_sensor_1_temperature
+                  ulm_card_graph_type: fill
+                  ulm_card_graph_hours: 48
+                  ulm_card_graph_group_by: interval
+              - type: 'custom:button-card'
+                template: card_graph
+                entity: sensor.compensation_sensor_hue_motion_sensor_1_temperature_2
+                variables:
+                  ulm_card_graph_color: "var(--google-red)"
+                  ulm_card_graph_name: Køkken
+                  ulm_card_graph_entity: sensor.compensation_sensor_hue_motion_sensor_1_temperature_2
+                  ulm_card_graph_type: fill
+                  ulm_card_graph_hours: 48
+                  ulm_card_graph_group_by: interval
+          - type: horizontal-stack
+            cards:
+              - type: 'custom:button-card'
+                template: card_graph
+                entity: sensor.hue_motion_sensor_1_illuminance
+                variables:
+                  ulm_card_graph_color: "var(--google-white)"
+                  ulm_card_graph_name: Entre
+                  ulm_card_graph_entity: sensor.hue_motion_sensor_1_illuminance
+                  ulm_card_graph_type: fill
+                  ulm_card_graph_hours: 16
+                  ulm_card_graph_group_by: interval
+              - type: 'custom:button-card'
+                template: card_graph
+                entity: sensor.hue_motion_sensor_1_illuminance_2
+                variables:
+                  ulm_card_graph_color: "var(--google-white)"
+                  ulm_card_graph_name: Køkken
+                  ulm_card_graph_entity: sensor.hue_motion_sensor_1_illuminance_2
+                  ulm_card_graph_type: fill
+                  ulm_card_graph_hours: 16
+                  ulm_card_graph_group_by: interval
+          - type: horizontal-stack
+            cards:
+              - type: 'custom:button-card'
+                template: card_graph
+                entity: sensor.entre_lampe_w
+                variables:
+                  ulm_card_graph_color: "var(--google-green)"
+                  ulm_card_graph_name: Entre
+                  ulm_card_graph_entity: sensor.entre_lampe_w
+                  ulm_card_graph_type: fill
+                  ulm_card_graph_hours: 16
+                  ulm_card_graph_group_by: interval
+              - type: 'custom:button-card'
+                template: card_graph
+                entity: sensor.skab_lightstrip_w
+                variables:
+                  ulm_card_graph_color: "var(--google-green)"
+                  ulm_card_graph_name: Køkken
+                  ulm_card_graph_entity: sensor.skab_lightstrip_w
+                  ulm_card_graph_type: fill
+                  ulm_card_graph_hours: 16
+                  ulm_card_graph_group_by: interval

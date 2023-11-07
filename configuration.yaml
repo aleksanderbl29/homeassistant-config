@@ -1,0 +1,123 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include sensors.yaml
+binary_sensor: !include binary_sensors.yaml
+device_tracker: !include device_tracker.yaml
+input_button: !include input_buttons.yaml
+command_line: !include commandline.yaml
+compensation: !include compensation.yaml
+homeassistant:
+  customize: !include customize.yaml
+
+
+frontend:
+  # your configuration
+  themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /local/community/lovelace-card-mod/card-mod.js
+    - /local/community/hass-hue-icons/hass-hue-icons.js
+    - /local/community/custom-brand-icons/custom-brand-icons.js
+
+## Power calculation
+powercalc:
+  power_sensor_naming: "{} w"
+  power_sensor_friendly_naming: "{} strømforbrug"
+  create_energy_sensors: true
+  energy_sensor_naming: "{} kWh"
+  energy_sensor_friendly_naming: "{} energiforbrug"
+  enable_autodiscovery: true
+
+## Google Assistant
+google_assistant:
+  project_id: !secret google_assistant_project_id
+  # service_account: !include SERVICE_ACCOUNT.JSON
+  # report_state: true
+  expose_by_default: false
+  entity_config:
+    input_boolean.aleksander_focus:
+      name: Focus Mode
+      aliases: fokus
+    input_boolean.guest_mode:
+      name: Guest mode
+      aliases: gæst mode
+    input_boolean.sleep_mode:
+      name: Sleep mode
+      aliases: Sove mode
+    input_boolean.kom_sent_hjem:
+      name: Kom sent hjem
+    input_button.tilbage_om_lidt:
+      name: Tilbage om lidt
+    input_boolean.astrid_hjemme:
+      name: Astrid Hjemme
+
+
+
+template:
+  - sensor:
+    - name: "Energy statistics"
+      unit_of_measurement: kWh
+      device_class: energy
+      state_class: measurement
+      state: >
+        {{ states("sensor.total_energy")}}
+      attributes:
+        last_reset: '2001-01-01T00:00:00+00:00'
+
+
+## Nordpool
+nordpool:
+
+## Adaptive lighting
+#adaptive_lighting:
+#lights:
+
+## Flagdays
+#flagdays_dk:
+
+## Anniversaries
+anniversaries:
+  sensors:
+  - name: Årsdag
+    date: !secret aarsdag
+    show_half_anniversary: true
+    days_as_soon: 7
+    icon_soon: mdi:heart
+  - name: Aleksanders fødselsdag
+    date: !secret aleksander_fodselsdag
+    days_as_soon: 7
+  - name: Astrids fødselsdag
+    date: !secret astrid_fodselsdag
+    days_as_soon: 7
+  - name: Første kys
+    date: !secret forste_kys
+    count_up: true
+
+## Spotcast
+spotcast:
+  sp_dc: !secret sp_dc
+  sp_key: !secret sp_key
+  country: DK
+
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.30.33.0/24
+    - !secret pihole1_ip
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
+
+fan:
+  - platform: xiaomi_miio_fan
+    name: Vind
+    host: !secret xiaomi_fan_host
+    token: !secret xiaomi_fan_token

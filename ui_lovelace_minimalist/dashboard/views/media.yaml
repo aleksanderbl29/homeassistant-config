@@ -1,0 +1,108 @@
+title: "Media"
+path: "media"
+cards:
+  - type: "custom:button-card"
+    template: chip_back
+    variables:
+      ulm_chip_back_path: iphone_home
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Stue
+      - type: custom:mini-media-player
+        entity: media_player.sonos_one_sl
+        volume_stateless: false
+        group: false
+        sound_mode: full
+        icon: phu:sonos-one
+        artwork: cover
+        hide:
+          power: true
+        max_volume: 33
+      - type: custom:mini-media-player
+        entity: media_player.apple_tv
+        name: Apple TV
+        artwork: full-cover
+        max_volume: 30
+        hide:
+          power: false
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Kontor
+      - type: custom:mini-media-player
+        entity: media_player.aleksanders_vaerelse
+        volume_stateless: false
+        group: false
+        sound_mode: full
+        icon: phu:sonos-one
+        artwork: cover
+        max_volume: 33
+        hide:
+          power: true
+      - type: custom:mini-media-player
+        entity: media_player.kontor_tv
+        name: Kontor TV
+        artwork: cover
+        hide:
+          power: true
+          volume: true
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Køkken
+      - type: custom:mini-media-player
+        entity: media_player.unnamed_room
+        volume_stateless: false
+        group: false
+        mdi: phu:sonos-one
+        sound_mode: full
+        artwork: cover
+        hide:
+          power: true
+        max_volume: 33
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        name: Soveværelse
+      - type: custom:mini-media-player
+        entity: media_player.sonos_roam_kokken
+        volume_stateless: false
+        group: false
+        sound_mode: full
+        icon: phu:sonos-move
+        artwork: cover
+        hide:
+          power: true
+      - type: "custom:button-card"
+        template: card_battery
+        entity: sensor.sonos_roam_kokken_battery
+        variables:
+          ulm_card_battery_battery_level_danger: 20
+          ulm_card_battery_battery_level_warning: 40
+          ulm_card_battery_color_battery_level_ok: var(--google-blue)
+          ulm_card_battery_charger_type_entity_id: binary_sensor.sonos_roam_kokken_power
+
+
+  # - type: custom:mini-media-player
+  #   entity: media_player.samsung_7_series_40
+  #   name: Fjernsyn
+  #   icon: mdi:television
+  #   hide:
+  #     power: false
+
+  # - type: custom:mini-media-player
+  #   entity: media_player.apple_tv
+  #   name: Apple TV
+  #   icon: phu:apple-tv-box
+  #   max_volume: 30
+  #   hide:
+  #     power: false

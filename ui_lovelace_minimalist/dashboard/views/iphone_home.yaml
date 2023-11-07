@@ -1,0 +1,175 @@
+title: "iPhone Home"
+path: "iphone_home"
+cards:
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: "card_esh_welcome"
+        triggers_update: "input_boolean.welcome_toggle"
+        variables:
+          ulm_card_esh_welcome_collapse: input_boolean.welcome_toggle
+          ulm_weather: "weather.ostboulevarden_1"
+          entity_1:
+            nav: "house"
+            icon: "mdi:home"
+            name: "Hjem"
+            color: "blue"
+          entity_2:
+            nav: "lights"
+            icon: "mdi:lightbulb"
+            name: "Lys"
+            color: "yellow"
+          entity_3:
+            nav: "media"
+            icon: "mdi:monitor-speaker"
+            name: "Media"
+            color: "green"
+          entity_4:
+            nav: "graphs"
+            icon: "mdi:chart-multiple"
+            name: "Graf"
+            color: "purple"
+          entity_5:
+            nav: "network"
+            icon: "mdi:lan-pending"
+            # >
+            #   {% if states('binary_sensor.updates') == "off" %}
+            #     mdi:lan-pending
+            #   {% else %}
+            #     mdi:update
+            #   {% endif %}
+            name: Lab
+            color: "red"
+
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_person
+            entity: person.aleksander
+            variables:
+              ulm_card_person_entity: person.aleksander
+              ulm_card_person_use_entity_picture: true
+              ulm_card_person_battery: sensor.aleksanders_iphone_13_battery_level
+
+          - type: "custom:button-card"
+            template: card_person
+            entity: person.astrid
+            variables:
+              ulm_card_person_entity: person.astrid
+              ulm_card_person_use_entity_picture: true
+              ulm_card_person_battery: sensor.astrid_berthelsens_iphone_battery_level
+
+      - type: "custom:button-card"
+        template: card_title
+        label: Rum
+
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template:
+              - card_esh_room
+              - yellow_on
+            name: Kontor
+            entity: light.kontor_lys
+            icon: mdi:chair-rolling
+            tap_action:
+              action: navigate
+              navigation_path: "kontor"
+            label: '[[[ return states["sensor.kontor_label"].state ]]]'
+          - type: "custom:button-card"
+            template:
+              - card_esh_room
+              - yellow_on
+            name: Stue
+            entity: light.stue_lys
+            icon: mdi:sofa-outline
+            tap_action:
+              action: navigate
+              navigation_path: "stue"
+            label: '[[[ return states["sensor.stue_room_label"].state ]]]'
+
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template:
+              - card_esh_room
+              - yellow_on
+            name: Entre
+            entity: light.loftslampe_3
+            icon: mdi:coat-rack
+            tap_action:
+              action: navigate
+              navigation_path: "fallesareal"
+            label: '[[[ return states["sensor.entre_room_label"].state ]]]'
+          - type: "custom:button-card"
+            template:
+              - card_esh_room
+              - yellow_on
+            name: Køkken
+            entity: light.skab_lightstrip
+            icon: phu:kitchen-alt
+            tap_action:
+              action: navigate
+              navigation_path: "fallesareal"
+            label: '[[[ return states["sensor.kitchen_room_label"].state ]]]'
+
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template:
+              - card_esh_room
+              - yellow_on
+            name: Soveværelse
+            entity: light.sovevaerelse_lys
+            icon: mdi:bed-king-outline
+            tap_action:
+              action: navigate
+              navigation_path: "bedroom"
+            label: '[[[ return states["sensor.bedroom_room_label"].state ]]]'
+          # - type: "custom:button-card"
+          #   template:
+          #     - card_esh_room
+          #     - yellow_on
+          #   name: Køkken
+          #   entity: light.skab_lightstrip
+          #   icon: mdi:knife
+          #   tap_action:
+          #     action: navigate
+          #     navigation_path: "fallesareal"
+          #   label: '[[[ return states["sensor.kitchen_room_label"].state ]]]'
+
+      - type: "custom:button-card"
+        template: card_title
+        label: Sensor
+
+      - type: horizontal-stack
+        cards:
+
+        - type: 'custom:button-card'
+          template: card_binary_sensor_alert
+          variables:
+            ulm_card_binary_sensor_alert: true
+            ulm_show_last_changed: true
+            ulm_card_binary_sensor_alert_name: Entre
+            ulm_card_binary_sensor_alert_icon: mdi:coat-rack
+          entity: binary_sensor.hue_motion_sensor_1_motion
+        - type: 'custom:button-card'
+          template: card_binary_sensor_alert
+          variables:
+            ulm_card_binary_sensor_alert: true
+            ulm_show_last_changed: true
+            ulm_card_binary_sensor_alert_name: Køkken
+            ulm_card_binary_sensor_alert_icon: mdi:fridge
+          entity: binary_sensor.hue_motion_sensor_1_motion_2
+
+      - type: "custom:button-card"
+        template: card_weather
+        entity: weather.ostboulevarden_1
+        variables:
+          ulm_card_weather_name: " "
+          ulm_card_weather_primary_info:
+            - wind_speed
+            - precipitation_probability
+          ulm_card_weather_backdrop:
+            fade: true
+

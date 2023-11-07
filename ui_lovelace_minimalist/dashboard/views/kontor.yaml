@@ -1,0 +1,239 @@
+title: "Kontor"
+path: "kontor"
+cards:
+  - type: "custom:button-card"
+    template: chip_back
+    variables:
+      ulm_chip_back_path: iphone_home
+
+  - type: vertical-stack
+    cards:
+    - type: "custom:button-card"
+      template: card_title
+      name: Kontor
+      label: Aleksanders Skrivebord
+
+    - type: vertical-stack
+      cards:
+      - type: "custom:button-card"
+        template: card_input_boolean
+        entity: input_boolean.aleksander_focus
+        name: Focus mode
+
+      - type: horizontal-stack
+        cards:
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.skrivebord_venstre
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Venstre"
+            ulm_card_light_icon: hue:play-bar-v
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.skrivebord_vindue
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Vindue"
+            ulm_card_light_icon: hue:play-bar
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.skrivebord_hojre
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Højre"
+            ulm_card_light_icon: hue:play-bar-v
+      - type: horizontal-stack
+        cards:
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.rgb_paere_2
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Skrivebord"
+            ulm_card_light_icon: mdi:desk
+        - type: "custom:button-card"
+          template: card_light
+          entity: light.elgato_cw31j1a04120
+          variables:
+            ulm_card_light_enable_slider: true
+            ulm_card_light_enable_color: true
+            ulm_card_light_enable_collapse: true
+            ulm_card_light_enable_popup: false
+            ulm_card_light_name: "Keylight"
+            ulm_card_light_icon: mdi:spotlight
+
+  - type: vertical-stack
+    cards:
+    - type: "custom:button-card"
+      template: card_title
+      label: "Lys"
+    - type: horizontal-stack
+      cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:gap-card
+            height: 4
+          - type: "custom:button-card"
+            template: card_light
+            entity: light.loftslampe
+            variables:
+              ulm_card_light_enable_slider: true
+              ulm_card_light_enable_color: true
+              ulm_card_light_enable_collapse: false
+              ulm_card_light_enable_horizontal: false
+              ulm_card_light_enable_popup: false
+              ulm_card_light_icon: mdi:ceiling-light
+      - type: vertical-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_light
+            entity: light.vindueskarm_venstre
+            variables:
+              ulm_card_light_enable_slider: false
+              ulm_card_light_enable_color: true
+              ulm_card_light_enable_collapse: true
+              ulm_card_light_enable_popup: false
+              ulm_card_light_icon: hue:bulb-filament
+              ulm_card_light_name: "Venstre"
+          - type: "custom:button-card"
+            template: card_light
+            entity: light.vindueskarm_hojre
+            variables:
+              ulm_card_light_enable_slider: false
+              ulm_card_light_enable_color: true
+              ulm_card_light_enable_collapse: true
+              ulm_card_light_enable_popup: false
+              ulm_card_light_icon: hue:bulb-filament
+              ulm_card_light_name: "Højre"
+    - type: "custom:button-card"
+      template: card_light
+      entity: light.astrids_lampe
+      variables:
+        ulm_card_light_enable_slider: false
+        ulm_card_light_enable_color: true
+        ulm_card_light_enable_collapse: true
+        ulm_card_light_enable_popup: false
+        ulm_card_light_name: "Astrids lampe"
+        ulm_card_light_icon: mdi:cloud
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Højttaler"
+
+      - type: custom:mini-media-player
+        entity: media_player.aleksanders_vaerelse
+        volume_stateless: false
+        group: false
+        sound_mode: full
+        artwork: cover
+        max_volume: "25"
+        hide:
+          power: true
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Scener"
+
+      - type: "custom:button-card"
+        template:
+          - card_scenes_welcome
+        variables:
+          entity_1:
+            entity_id: "scene.aleksanders_vaerelse_read"
+            icon: "mdi:book-open-page-variant-outline"
+            icon_color: "blue"
+            name: "Read"
+            color: "blue"
+          entity_2:
+            entity_id: "scene.aleksanders_vaerelse_relax"
+            icon: "mdi:sofa"
+            icon_color: "yellow"
+            name: "Relax"
+            color: "yellow"
+          entity_3:
+            entity_id: "scene.aleksanders_vaerelse_soho"
+            icon: "mdi:palette"
+            icon_color: "red"
+            name: "Soho"
+            color: "red"
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Sensor"
+
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            template: card_battery
+            entity: sensor.aleksander_dimmer_battery
+            variables:
+              ulm_card_battery_charger_type_entity_id: sensor.aleksander_dimmer_battery
+              ulm_card_battery_battery_level_danger: 15
+              ulm_card_battery_battery_level_warning: 30
+              ulm_card_battery_name: Hue Dimmer
+            name: Dimmer
+          - type: "custom:button-card"
+            template: card_battery
+            entity: sensor.aleksanders_iphone_13_battery_level
+            variables:
+              ulm_card_battery_charger_type_entity_id: sensor.aleksanders_iphone_13_battery_level
+              ulm_card_battery_battery_level_danger: 20
+              ulm_card_battery_battery_level_warning: 30
+              ulm_card_battery_battery_state_entity_id: sensor.aleksanders_iphone_13_battery_state
+              ulm_card_battery_name: iPhone 13
+
+  - type: vertical-stack
+    cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Energiforbrug"
+      - type: custom:mini-graph-card
+        entities:
+          - entity: sensor.skrivebord_sum_w
+            name: Skrivebord
+            color: pink
+          - entity: sensor.loftslampe_w
+            name: Lofstlampe
+            color: white
+          - entity: sensor.fjernsyn_sum_w
+            name: Fjernsyn
+            color: orange
+          - entity: sensor.nightstate
+            name: Night
+            show_line: false
+            show_points: false
+            show_legend: false
+            y_axis: secondary
+            color: gray
+        hours_to_show: 0.083
+        points_per_hour: 722
+        lower_bound_secondary: 0
+        upper_bound_secondary: 1
+        aggregate_func: avg
+        animate: true
+        show:
+          labels: false
+          points: false
+          labels_secondary: false
+          name: false
+          icon: false
+          state: false

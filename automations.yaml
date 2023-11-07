@@ -1,0 +1,1776 @@
+- id: '1651092492872'
+  alias: ALEKSANDER - Focus mode
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.alle_motion_sensors
+    to: 'on'
+    from: 'off'
+    id: motion
+  - platform: state
+    entity_id:
+    - input_boolean.aleksander_focus
+    to: 'on'
+    from: 'off'
+    id: focus on
+  - platform: state
+    entity_id:
+    - input_boolean.aleksander_focus
+    from: 'on'
+    to: 'off'
+    id: focus off
+  - platform: state
+    entity_id:
+    - person.astrid
+    from: not_home
+    to: home
+    id: astrid hjem
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'off'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: motion
+      - condition: state
+        entity_id: input_boolean.aleksander_focus
+        state: 'on'
+      sequence:
+      - service: light.turn_on
+        data:
+          flash: short
+        target:
+          device_id: e85a27e86da996e89cfdd91eb43ab5cb
+      - parallel:
+        - choose:
+          - conditions:
+            - condition: device
+              type: is_on
+              device_id: 65535128aeaf7cb6ec891256f2874588
+              entity_id: light.skrivebord_vindue
+              domain: light
+            sequence:
+            - service: light.turn_on
+              data:
+                flash: short
+              target:
+                device_id: 65535128aeaf7cb6ec891256f2874588
+          default: []
+      - service: light.turn_on
+        data:
+          flash: short
+        target:
+          device_id: e85a27e86da996e89cfdd91eb43ab5cb
+    - conditions:
+      - condition: trigger
+        id: focus on
+      sequence:
+      - service: light.turn_on
+        data:
+          transition: 5
+          brightness: 1
+          kelvin: 2000
+        target:
+          entity_id: light.rgb_paere_2
+    - conditions:
+      - condition: trigger
+        id: focus off
+      sequence:
+      - service: light.turn_off
+        data:
+          transition: 5
+        target:
+          entity_id: light.rgb_paere_2
+    - conditions:
+      - condition: trigger
+        id: astrid hjem
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.aleksander_focus
+  mode: parallel
+  max: 10
+- id: '1651951012940'
+  alias: SUNSET - Kontor
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+    id: begynd
+  - platform: sun
+    event: sunset
+    offset: +00:30:00
+    id: slut
+  condition:
+  - condition: state
+    entity_id: person.aleksander
+    state: home
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: begynd
+      - condition: not
+        conditions:
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: light.vindueskarm_venstre
+            state: 'on'
+          - condition: state
+            entity_id: light.vindueskarm_hojre
+            state: 'on'
+          - condition: state
+            entity_id: light.loftslampe
+            state: 'on'
+      sequence:
+      - if:
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: input_boolean.aleksander_focus
+            state: 'on'
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.g9_mbp
+              state: 'on'
+            - condition: state
+              entity_id: binary_sensor.macbook_pro_active
+              state: 'on'
+        then:
+        - service: scene.turn_on
+          data:
+            transition: 92
+          target:
+            entity_id:
+            - scene.aleksanders_vaerelse_read
+        - service: light.turn_on
+          data:
+            transition: 10
+          target:
+            entity_id: light.astrids_lampe
+        else: []
+    - conditions:
+      - condition: trigger
+        id: slut
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.aleksander_focus
+          state: 'on'
+        - condition: state
+          entity_id: light.vindueskarm_venstre
+          state: 'on'
+        - condition: device
+          type: is_on
+          device_id: 88f42c60fbcd26ce0608455283f142a1
+          entity_id: light.skrivebord_hojre
+          domain: light
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: binary_sensor.g9_mbp
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.macbook_pro_active
+            state: 'on'
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 45
+        target:
+          entity_id: scene.aleksanders_vaerelse_relax
+    default: []
+  mode: single
+- id: '1653757151171'
+  alias: ADMIN - Home-away
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.astrid
+    to: home
+    id: astrid_hjem
+    from: not_home
+  - platform: state
+    entity_id:
+    - person.aleksander
+    to: home
+    id: aleksander_hjem
+    from: not_home
+    enabled: false
+  - platform: state
+    entity_id:
+    - person.aleksander
+    from: home
+    id: aleksander_ud
+    to: not_home
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+    enabled: false
+  - platform: state
+    entity_id:
+    - binary_sensor.alle_motion_sensors
+    to: 'on'
+    id: motion
+    enabled: false
+  - platform: state
+    entity_id:
+    - sensor.nogen_hjemme
+    to: home
+    id: nogen_hjemme
+    enabled: false
+    from: not_home
+  - platform: state
+    entity_id:
+    - person.astrid
+    from: home
+    to: not_home
+    id: astrid_ud
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    enabled: false
+  - platform: state
+    entity_id:
+    - input_boolean.aleksander_hjemme
+    from: 'on'
+    to: 'off'
+    id: aleks_ud_homekit
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: aleksander_hjem
+        alias: Aleksander kommer hjem
+      sequence:
+      - service: notify.mobile_app_aleksanders_iphone_13
+        data:
+          message: Aleksander er hjemme
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.aleksander_hjemme
+      - service: timer.start
+        data: {}
+        target:
+          entity_id: timer.aleksander_lige_kommet_hjem
+      - wait_for_trigger:
+        - platform: state
+          entity_id:
+          - binary_sensor.alle_motion_sensors
+          from: 'off'
+          to: 'on'
+        continue_on_timeout: false
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: above_horizon
+          - condition: state
+            entity_id: person.astrid
+            state: not_home
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 3
+            target:
+              entity_id:
+              - scene.aleksanders_vaerelse_read
+              - scene.stue_read
+            enabled: false
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+          - condition: state
+            entity_id: person.astrid
+            state: not_home
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 3
+            target:
+              entity_id:
+              - scene.aleksanders_vaerelse_relax
+              - scene.stue_relax
+    - conditions:
+      - condition: trigger
+        id: aleksander_ud
+        alias: Aleksander går
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id:
+          - input_boolean.aleksander_hjemme
+      - choose:
+        - conditions:
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: input_boolean.astrid_hjemme
+              state: 'off'
+              for:
+                hours: 0
+                minutes: 10
+                seconds: 0
+            - condition: or
+              conditions:
+              - condition: state
+                entity_id: device_tracker.ping_astrid_iphone
+                state: not_home
+                for:
+                  hours: 0
+                  minutes: 10
+                  seconds: 0
+              - condition: state
+                entity_id: input_boolean.guest_mode
+                state: 'off'
+          sequence:
+          - service: script.turn_off_all_lights
+            data: {}
+        default: []
+      - choose:
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: device_tracker.ping_astrid_iphone
+              state: home
+            - condition: state
+              entity_id: input_boolean.astrid_hjemme
+              state: 'on'
+          sequence:
+          - service: light.turn_off
+            data:
+              transition: 4
+            target:
+              area_id:
+              - aleksanders_vaerelse
+              - stue
+              - kokken
+              - entre
+              - sovevaerelse
+          - service: input_boolean.turn_off
+            data: {}
+            target:
+              entity_id:
+              - input_boolean.sleep_mode
+              - input_boolean.sleep_music_mode
+    - conditions:
+      - condition: trigger
+        id: motion
+      - condition: state
+        entity_id: sensor.darkness
+        state: 'on'
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: person.aleksander
+          state: home
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: person.astrid
+          state: home
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: above_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 3
+            target:
+              entity_id: scene.stue_read
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 3
+            target:
+              entity_id: scene.stue_relax
+    - conditions:
+      - condition: trigger
+        id: nogen_hjemme
+      - condition: state
+        entity_id: sensor.darkness
+        state: 'on'
+      sequence:
+      - wait_for_trigger:
+        - platform: state
+          entity_id:
+          - binary_sensor.alle_motion_sensors
+          to: 'on'
+          from: 'off'
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: above_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 3
+            target:
+              entity_id: scene.stue_read
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 3
+            target:
+              entity_id: scene.stue_relax
+    - conditions:
+      - condition: trigger
+        id: astrid_hjem
+      sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.astrid_hjemme
+    - conditions:
+      - condition: trigger
+        id: astrid_ud
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.astrid_hjemme
+        enabled: false
+    - conditions:
+      - condition: trigger
+        id:
+        - aleks_ud_homekit
+      - condition: state
+        entity_id: input_boolean.astrid_hjemme
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: 'off'
+      sequence:
+      - service: script.turn_off_all_lights
+        data: {}
+    default: []
+  mode: parallel
+  max: 10
+- id: '1654794483936'
+  alias: ALEKSANDER ALENE - Focus blink skrivebord når astrid kommer hjem
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.astrid_hjemme
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.aleksander_hjemme
+    state: 'on'
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  action:
+  - wait_for_trigger:
+    - type: motion
+      platform: device
+      device_id: 621d3fd083bc78226a3b3b368291e68e
+      entity_id: binary_sensor.hue_motion_sensor_1_motion
+      domain: binary_sensor
+    enabled: true
+  - repeat:
+      count: '3'
+      sequence:
+      - choose:
+        - conditions:
+          - condition: device
+            type: is_on
+            device_id: 65535128aeaf7cb6ec891256f2874588
+            entity_id: light.skrivebord_vindue
+            domain: light
+          sequence:
+          - service: light.turn_on
+            data:
+              flash: short
+            target:
+              device_id: 65535128aeaf7cb6ec891256f2874588
+        default: []
+      - service: light.turn_on
+        data:
+          flash: short
+        target:
+          entity_id:
+          - light.skrivebord_venstre
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 0
+          milliseconds: 650
+  mode: single
+- id: '1658939543738'
+  alias: ADMIN - Room label timer
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.room_label_timer
+    from: 'off'
+    to: 'on'
+    id: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 15
+    enabled: false
+  - platform: state
+    entity_id:
+    - input_boolean.room_label_timer
+    from: 'on'
+    to: 'off'
+    id: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 15
+    enabled: false
+  - platform: homeassistant
+    event: start
+    id: HA_Start
+    enabled: false
+  - platform: state
+    entity_id:
+    - timer.room_label
+    to: idle
+    from: active
+    id: timer
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'on'
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.room_label_timer
+    - conditions:
+      - condition: trigger
+        id: 'off'
+      sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.room_label_timer
+    - conditions:
+      - condition: trigger
+        id: HA_Start
+      sequence:
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.room_label_timer
+    - conditions:
+      - condition: trigger
+        id: timer
+      sequence:
+      - service: input_boolean.toggle
+        data: {}
+        target:
+          entity_id: input_boolean.room_label_timer
+      - service: timer.start
+        data: {}
+        target:
+          entity_id: timer.room_label
+    default: []
+  mode: restart
+- id: '1654794445636'
+  alias: NOTIFICATION - HA Update
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - update.home_assistant_core_update
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_aleksanders_ipad_pro
+    data:
+      title: Home Assistant Update Available
+      message: 'Installed: {{ state_attr(''update.home_assistant_core_update'', ''installed_version'')
+        }} Latest: {{ state_attr(''update.home_assistant_core_update'', ''latest_version'')
+        }}'
+      data:
+        clickAction: /config/updates
+        tag: ha_core_update
+        channel: HA Update
+        actions:
+        - action: URI
+          title: Release Notes
+          uri: https://www.home-assistant.io/latest-release-notes/
+  - service: notify.mobile_app_aleksanders_iphone_13
+    data:
+      title: Home Assistant Update Available
+      message: 'Installed: {{ state_attr(''update.home_assistant_core_update'', ''installed_version'')
+        }} Latest: {{ state_attr(''update.home_assistant_core_update'', ''latest_version'')
+        }}'
+      data:
+        clickAction: /config/updates
+        tag: ha_core_update
+        channel: HA Update
+        actions:
+        - action: URI
+          title: Release Notes
+          uri: https://www.home-assistant.io/latest-release-notes/
+  mode: single
+- id: '1661880374781'
+  alias: CUSTOM - Køkken dimmer
+  description: ''
+  use_blueprint:
+    path: codycodes/hue-remote-dimmer-december-2021.yaml
+    input:
+      dimmer_device: 79bd9ef31c36cc77769bd24475841548
+      off_long_action:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: above_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 5
+            target:
+              entity_id: scene.faellesareal_read
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 5
+            target:
+              entity_id: scene.faellesareal_relax
+      brightness_down_short_action:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: input_boolean.aleksander_hjemme
+            state: 'on'
+          - condition: state
+            entity_id: input_boolean.astrid_hjemme
+            state: 'off'
+          sequence:
+          - service: light.turn_off
+            data:
+              transition: 10
+            target:
+              area_id:
+              - kokken
+              - stue
+        default: []
+      brightness_down_long_action:
+      - service: light.turn_off
+        data:
+          transition: 10
+        target:
+          area_id:
+          - stue
+          - kokken
+      brightness_up_long_action:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.kob_maelk
+      on_short_action:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.kitchen_motion_deactivate
+      brightness_up_short_action:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: input_boolean.kitchen_motion_deactivate
+        enabled: false
+- id: '1661972764952'
+  alias: SUNSET - Lys hvis musik eller tv i stue
+  description: Tænder lyset i stuen, hvis der er musik på højttaleren eller chromecast
+    er tændt, når solen går ned.
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+    id: begynd
+  - platform: sun
+    event: sunset
+    offset: +01:00:00
+    id: slut
+  condition:
+  - condition: state
+    entity_id: person.aleksander
+    state: home
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: begynd
+      - condition: or
+        conditions:
+        - condition: device
+          device_id: fe7247ffbf2697594aa41e5ce42d74ee
+          domain: media_player
+          entity_id: media_player.sonos_one_sl
+          type: is_playing
+        - condition: not
+          conditions:
+          - condition: state
+            entity_id: media_player.stue_tv
+            state: unavailable
+      - condition: state
+        entity_id: light.stue_lys
+        state: 'off'
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 90
+        target:
+          entity_id: scene.stue_read
+    - conditions:
+      - condition: trigger
+        id: slut
+      - condition: or
+        conditions:
+        - condition: device
+          device_id: fe7247ffbf2697594aa41e5ce42d74ee
+          domain: media_player
+          entity_id: media_player.sonos_one_sl
+          type: is_playing
+        - condition: not
+          conditions:
+          - condition: state
+            entity_id: media_player.stue_tv
+            state: unavailable
+      - condition: state
+        entity_id: light.stue_lys
+        state: 'off'
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 600
+        target:
+          entity_id: scene.stue_relax
+    default: []
+  mode: single
+- id: '1664556796131'
+  alias: ALEKSANDER ALENE - Midlertidig sluk hele lejlighed
+  description: Slukker alt lyset i hele lejligheden og tænder det igen på samme mede
+    efter bevægelse i entre
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.temp_off
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.aleksander_hjemme
+    state: 'on'
+  - condition: state
+    entity_id: input_boolean.astrid_hjemme
+    state: 'off'
+  action:
+  - service: scene.create
+    data:
+      scene_id: temp_hele_lejlighed
+      snapshot_entities:
+      - light.skab_lightstrip
+      - light.arkitektlampe
+      - light.loftslampe_3
+      - light.loftslampe_2
+      - light.loftslampe
+      - light.skrivebord_hojre
+      - light.skrivebord_venstre
+      - light.skrivebord_vindue
+      - light.sofa_filament
+      - light.vindueskarm_hojre
+      - light.vindueskarm_venstre
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.hue_motion_sensor_1_motion
+      from: 'off'
+      to: 'on'
+    continue_on_timeout: false
+  - service: light.turn_on
+    data:
+      transition: 5
+      brightness_pct: 25
+      color_name: peru
+    target:
+      entity_id: light.skab_lightstrip
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.alle_motion_sensors
+      from: 'on'
+      to: 'off'
+    continue_on_timeout: false
+  - service: light.turn_off
+    data:
+      transition: 45
+    target:
+      area_id:
+      - stue
+      - entre
+      - aleksanders_vaerelse
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.hue_motion_sensor_1_motion
+      from: 'off'
+      to: 'on'
+    continue_on_timeout: false
+  - service: scene.turn_on
+    target:
+      entity_id: scene.temp_hele_lejlighed
+    metadata: {}
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.temp_off
+  mode: single
+- id: '1664910739795'
+  alias: POWER SAVE - Skab lightstrip
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: ea5f2b73fc27963a97afacff4b6a5087
+    entity_id: light.skab_lightstrip
+    domain: light
+    for:
+      hours: 1
+      minutes: 30
+      seconds: 0
+  - type: no_motion
+    platform: device
+    device_id: 9f8faeb14e03a8575c5904fefa3518e0
+    entity_id: binary_sensor.hue_motion_sensor_1_motion_2
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: binary_sensor.hue_motion_sensor_1_motion_2
+    state: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+  - type: turn_off
+    device_id: ea5f2b73fc27963a97afacff4b6a5087
+    entity_id: light.skab_lightstrip
+    domain: light
+  mode: single
+- id: '1667676640928'
+  alias: ADMIN - Home Assistant Restart Notification
+  description: ''
+  use_blueprint:
+    path: gregoryduckworth/restart_notification.yaml
+    input:
+      notify_device: 85a05e4a9dbb171f91d47461a55b3cae
+- id: '1667683691088'
+  alias: NOTIFICATION - Backup fejl
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.backups_stale
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_aleksanders_iphone_13
+    data:
+      title: Backups are Stale
+      message: Please visit the 'Home Assistant Google Drive Backup ' add-on status
+        page for details.
+  mode: single
+- id: '1669753224517'
+  alias: ADMIN - HA restart macbook
+  description: ''
+  use_blueprint:
+    path: gregoryduckworth/restart_notification.yaml
+    input:
+      notify_device: fbed587f8091d35eaee41f9d0472c9b3
+- id: '1670935630029'
+  alias: BUTTON - Stue lys
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.stue_lys
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: sun.sun
+        state: above_horizon
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 5
+        target:
+          entity_id: scene.stue_read
+    - conditions:
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 5
+        target:
+          entity_id: scene.stue_relax
+  mode: single
+- id: '1672157730437'
+  alias: 'SECURITY: Notification ved bevægelse og ingen hjemme'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.alle_motion_sensors
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    state: 'off'
+    entity_id: input_boolean.aleksander_hjemme
+  - condition: state
+    entity_id: input_boolean.astrid_hjemme
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  action:
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - if:
+    - condition: state
+      state: 'off'
+      entity_id: input_boolean.aleksander_hjemme
+    - condition: state
+      entity_id: input_boolean.astrid_hjemme
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.guest_mode
+      state: 'off'
+    then:
+    - service: notify.mobile_app_aleksanders_iphone_13
+      data:
+        title: "\U0001F6A8 Bevægelse registreret \U0001F6A8"
+        message: Der er ingen hjemme
+  mode: single
+- id: '1672767965570'
+  alias: SUNSET - Stue lys til varm ved solnedgang
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: '+1:00:00'
+  condition:
+  - condition: state
+    entity_id: person.aleksander
+    state: home
+  - condition: numeric_state
+    entity_id: sensor.stue_loftslampe_w
+    above: 7.4
+  - condition: numeric_state
+    entity_id: sensor.arkitektlampe_w
+    above: 7.4
+  - condition: state
+    entity_id: input_boolean.astrid_hjemme
+    state: 'off'
+  action:
+  - service: scene.turn_on
+    data:
+      transition: 900
+    target:
+      entity_id: scene.stue_hyggelig
+  mode: single
+- id: '1680199524555'
+  alias: SUNSET - Stue
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+    id: begynd
+  - platform: sun
+    event: sunset
+    offset: +00:30:00
+    id: slut
+  condition:
+  - condition: state
+    entity_id: person.aleksander
+    state: home
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: begynd
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: light.stue_lys
+          state: 'on'
+      sequence:
+      - if:
+        - condition: or
+          conditions:
+          - condition: state
+            entity_id: input_boolean.aleksander_focus
+            state: 'on'
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: binary_sensor.g9_mbp
+              state: 'on'
+            - condition: state
+              entity_id: binary_sensor.macbook_pro_active
+              state: 'on'
+        then:
+        - service: scene.turn_on
+          data:
+            transition: 92
+          target:
+            entity_id: scene.stue_read
+        else: []
+    - conditions:
+      - condition: trigger
+        id: slut
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: input_boolean.aleksander_focus
+          state: 'on'
+        - condition: state
+          entity_id: light.vindueskarm_hojre
+          state: 'on'
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: binary_sensor.g9_mbp
+            state: 'on'
+          - condition: state
+            entity_id: binary_sensor.macbook_pro_active
+            state: 'on'
+        - condition: numeric_state
+          entity_id: sensor.stue_loftslampe_w
+          above: 7.4
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 45
+        target:
+          entity_id: scene.stue_relax
+    default: []
+  mode: single
+- id: '1680202872280'
+  alias: Default theme
+  description: ''
+  use_blueprint:
+    path: ui_lovelace_minimalist/set_theme.yaml
+    input:
+      mode: light
+      theme: minimalist-mobile
+- id: '1680202980566'
+  alias: Sleep mode
+  description: ''
+  trigger:
+  - platform: event
+    event_type: shortcut_event_morning_snooze
+    id: snooze
+  - platform: event
+    event_type: shortcut_event_stop
+    id: alarm_stop
+  - platform: state
+    entity_id:
+    - input_boolean.sleep_mode
+    from: 'off'
+    to: 'on'
+    id: godnat
+  - platform: event
+    event_type: hue_event
+    event_data:
+      id: stue_dimmer_button
+      device_id: 22dee3c95b17b5d45ca2166f69ddbce3
+      unique_id: 4dc76848-2ec6-4a34-bcff-cd9edab1e151
+      type: short_release
+      subtype: 1
+    id: hue dimmer off
+  - platform: state
+    entity_id:
+    - input_boolean.sleep_mode
+    from: 'on'
+    to: 'off'
+    id: sleep_mode_godmorgen
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.astrid
+      state: home
+    - condition: state
+      entity_id: person.aleksander
+      state: home
+  action:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: godnat
+        - condition: and
+          conditions:
+          - condition: time
+            after: '21:30:00'
+            before: 07:00:00
+          - condition: trigger
+            id: hue dimmer off
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: 'on'
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id:
+          - input_boolean.aleksander_focus
+          - input_boolean.party_mode
+      - service: light.turn_off
+        data:
+          transition: 3
+        target:
+          entity_id:
+      - service: light.turn_off
+        data:
+          transition: 20
+        target:
+          entity_id: light.kladeskab
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: godnat
+        - condition: and
+          conditions:
+          - condition: time
+            after: '21:30:00'
+            before: 07:00:00
+          - condition: trigger
+            id: hue dimmer off
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: 'off'
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id:
+          - input_boolean.aleksander_focus
+          - input_boolean.party_mode
+      - service: light.turn_off
+        data:
+          transition: 3
+        target:
+          entity_id:
+      - service: light.turn_off
+        data:
+          transition: 20
+        target:
+          entity_id: light.kladeskab
+      - service: light.turn_off
+        data:
+          transition: 5
+        target:
+          area_id:
+          - entre
+          - kokken
+          - aleksanders_vaerelse
+          - sovevaerelse
+          - stue
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      - if:
+        - condition: state
+          entity_id: input_boolean.kom_sent_hjem
+          state: 'on'
+        then:
+        - service: light.turn_on
+          data:
+            transition: 10
+            brightness_pct: 5
+            rgbw_color:
+            - 255
+            - 25
+            - 0
+            - 0
+          target:
+            entity_id: light.astrids_lampe
+    - conditions:
+      - condition: trigger
+        id: snooze
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 180
+            target:
+              entity_id: scene.sovevaerelse_relax
+    - conditions:
+      - condition: trigger
+        id: alarm_stop
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+          sequence:
+          - service: scene.turn_on
+            data:
+              transition: 180
+            target:
+              entity_id: scene.sovevaerelse_helt_ned
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.sleep_mode
+    - conditions:
+      - condition: trigger
+        id: sleep_mode_godmorgen
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.kom_sent_hjem
+  mode: single
+- id: '1680206377496'
+  alias: KONTOR - MBP webcam keylight
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.macbook_pro_camera_in_use
+    from: 'off'
+    to: 'on'
+    id: 'on'
+  - platform: state
+    entity_id:
+    - binary_sensor.macbook_pro_camera_in_use
+    from: 'on'
+    to: 'off'
+    id: 'off'
+  condition:
+  - condition: state
+    entity_id: person.aleksander
+    state: home
+  - type: is_on
+    condition: device
+    device_id: fbed587f8091d35eaee41f9d0472c9b3
+    entity_id: binary_sensor.macbook_pro_active
+    domain: binary_sensor
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: binary_sensor.g9_mbp
+      state: 'on'
+      enabled: true
+    - condition: state
+      entity_id: light.skrivebord_hojre
+      state: 'on'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'on'
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.elgato_cw31j1a04120
+    - conditions:
+      - condition: trigger
+        id: 'off'
+      sequence:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.elgato_cw31j1a04120
+  mode: single
+- id: '1680263186614'
+  alias: BUTTON - Kontor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.kontor_lys
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: sun.sun
+        state: above_horizon
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 5
+        target:
+          entity_id: scene.aleksanders_vaerelse_read
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.astrids_lampe
+    - conditions:
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+      sequence:
+      - service: scene.turn_on
+        data:
+          transition: 5
+        target:
+          entity_id: scene.aleksanders_vaerelse_relax
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.astrids_lampe
+  mode: single
+- id: '1682032905591'
+  alias: Kom Sent hjem
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - person.astrid
+    from: not_home
+    to: home
+  - platform: state
+    entity_id:
+    - person.aleksander
+    from: not_home
+    to: home
+  condition:
+  - condition: state
+    entity_id: input_boolean.kom_sent_hjem
+    state: 'on'
+  - condition: state
+    entity_id: input_boolean.sleep_mode
+    state: 'on'
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  action:
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.alle_motion_sensors
+      from: 'off'
+      to: 'on'
+    continue_on_timeout: false
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.kom_sent_hjem
+  - service: scene.turn_on
+    data:
+      transition: 10
+    target:
+      entity_id: scene.sovevaerelse_helt_ned
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.alle_motion_sensors
+      from: 'on'
+      to: 'off'
+      for:
+        hours: 0
+        minutes: 15
+        seconds: 0
+    timeout:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: script.turn_off_all_lights
+    data: {}
+  mode: single
+- id: '1683416322869'
+  alias: Sonos køkken genstart
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.unnamed_room
+    to: unavailable
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.smart_socket_netto_socket_1
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.smart_socket_netto_socket_1
+  mode: single
+- id: '1683566790725'
+  alias: Tilbage om lidt
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.tilbage_om_lidt
+  condition:
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  action: []
+  mode: single
+- id: '1684964521064'
+  alias: Tænd lys i soveværelse næste gang astrid kommer hjem
+  description: One time run automation
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.astrid_hjemme
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.kladeskab
+  - service: automation.turn_off
+    data:
+      stop_actions: true
+    target:
+      entity_id: automation.taend_lys_i_sovevaerelse_naeste_gang_astrid_kommer_hjem
+  mode: single
+- id: '1685207234308'
+  alias: Begge væk - Unjoin sonos
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.aleksander_hjemme
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - platform: state
+    entity_id:
+    - input_boolean.astrid_hjemme
+    to: 'off'
+    from: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.astrid_hjemme
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.aleksander_hjemme
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.guest_mode
+    state: 'off'
+  action:
+  - service: media_player.unjoin
+    data: {}
+    target:
+      entity_id:
+      - media_player.unnamed_room
+      - media_player.aleksanders_vaerelse
+      - media_player.sonos_roam_kokken
+      - media_player.sonos_one_sl
+  mode: single
+- id: '1685462170662'
+  alias: Sync astrids lampe til loftslampe
+  description: ''
+  use_blueprint:
+    path: fireboy1919/light-state-sync.yaml
+    input:
+      entity_1: light.loftslampe
+      entity_2: light.astrids_lampe
+- id: '1687465762216'
+  alias: Sonos Roam nulstil lydstyrke
+  description: Ved ingen afspilning i 15 min nedsættes lydstyrken til 0.25
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.sonos_roam_kokken
+    from: playing
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.25
+    target:
+      entity_id: media_player.sonos_roam_kokken
+  mode: single
+- id: '1687900600269'
+  alias: SOVEVÆRELSE - Tænd lys næste gang blæser tændes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.turn_on_light_with_fan
+  condition:
+  - condition: state
+    entity_id: person.aleksander
+    state: home
+  action:
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - fan.xiaomi_miio_fan
+      to: 'on'
+    continue_on_timeout: false
+  - service: scene.turn_on
+    target:
+      entity_id: scene.sovevaerelse_wind_down
+    metadata: {}
+  mode: single
+- id: '1692631885010'
+  alias: KØKKEN - Grøn lampe ved bevægelse
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.hue_motion_sensor_1_motion_2
+    from: 'off'
+    to: 'on'
+    id: motion
+  - platform: state
+    entity_id:
+    - binary_sensor.hue_motion_sensor_1_motion_2
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+    id: no_motion
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - motion
+      - condition: time
+        after: 08:00:00
+        before: '18:00:00'
+      - condition: numeric_state
+        entity_id: sensor.hue_motion_sensor_1_illuminance_2
+        below: 35
+      - condition: state
+        entity_id: input_boolean.kokken_motion
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.sleep_mode
+        state: 'off'
+      sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id:
+          - input_boolean.read_loft_kokken
+          - input_boolean.kokken_motion
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.read_loft_kokken
+    - conditions:
+      - condition: trigger
+        id:
+        - motion
+      - condition: time
+        after: '18:00:00'
+        before: 08:00:00
+      - condition: numeric_state
+        entity_id: sensor.hue_motion_sensor_1_illuminance_2
+        below: 35
+      - condition: state
+        entity_id: input_boolean.kokken_motion
+        state: 'off'
+      - condition: state
+        entity_id: input_boolean.sleep_mode
+        state: 'off'
+      sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id:
+          - input_boolean.relax_loft_kokken
+          - input_boolean.kokken_motion
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.relax_loft_kokken
+    - conditions:
+      - condition: trigger
+        id:
+        - no_motion
+      sequence:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: input_boolean.kokken_motion
+  mode: single
+- id: '1692632199130'
+  alias: KØKKEN - Sluk bagtrappe lys efter en time uden bevægelse
+  description: Slukker lyset ved døren til bagtrappen hvis det har været tændt i en
+    time og der ikke har været bevægelse i køkkenet i mindst 20 min
+  trigger:
+  - platform: state
+    entity_id:
+    - light.bagtrappe
+    to: 'on'
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: binary_sensor.hue_motion_sensor_1_motion_2
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+    state: 'off'
+  - condition: state
+    entity_id: light.skab_lightstrip
+    state: 'on'
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.bagtrappe
+  mode: single
+- id: '1698746681503'
+  alias: KONTOR - Reboot dock
+  description: ''
+  trigger:
+  - platform: template
+    value_template: "{% set dis = is_state('sensor.macbook_pro_primary_display_name',
+      'LC49G95T' ) %}\n{% set dis_id = is_state('sensor.macbook_pro_primary_display_id',
+      '9D9E1F9D-EBF3-4155-0857-D6964E3302DB' ) %}\n\n{% set charg_state = is_state('sensor.macbook_pro_internal_battery_state',
+      'Charging' ) %}\n{% set batt_lev = states('sensor.macbook_pro_internal_battery_level')
+      %}\n{% set batt_70 = states('sensor.macbook_pro_internal_battery_level') |float(0)
+      > 70 %}\n\n{% if charg_state %}\n  {% set charg = is_state('sensor.macbook_pro_internal_battery_state',
+      'Charging' ) %}\n{% elif charg_state is false and batt_70 is true %}\n  {% set
+      charg = states('sensor.macbook_pro_internal_battery_level') |float(0) > 70 %}\n{%
+      endif %}\n\n{% set conn = is_state('sensor.macbook_pro_connection_type', 'Ethernet')
+      %}\n\n{% if dis and dis_id and charg and conn %}true\n{% else %}false\n{% endif
+      %}"
+  condition: []
+  action:
+  - service: notify.mobile_app_aleksanders_iphone_13
+    data:
+      message: macbook tilsluttet
+      title: "dev \U0001F916"
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.ikea_askvader_1
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.ikea_askvader_1
+  mode: single
