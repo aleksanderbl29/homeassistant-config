@@ -102,10 +102,10 @@ anniversaries:
     count_up: true
 
 ## Spotcast
-spotcast:
-  sp_dc: !secret sp_dc
-  sp_key: !secret sp_key
-  country: DK
+# spotcast:
+#   sp_dc: !secret sp_dc
+#   sp_key: !secret sp_key
+#   country: DK
 
 
 http:
