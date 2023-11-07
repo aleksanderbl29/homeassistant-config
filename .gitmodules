@@ -1,0 +1,9 @@
+[submodule "themes/ios-theme"]
+	path = themes/ios-theme
+	url = https://github.com/JuanMTech/ios-theme
+[submodule "themes/google-theme"]
+	path = themes/google-theme
+	url = https://github.com/JuanMTech/google-theme
+[submodule "themes/macOS-Theme"]
+	path = themes/macOS-Theme
+	url = https://github.com/JuanMTech/macOS-Theme
