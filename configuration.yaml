@@ -37,10 +37,10 @@ powercalc:
   enable_autodiscovery: true
 
 ## Google Assistant
-# google_assistant:
-#   project_id: !secret google_assistant_project_id
-  # service_account: !include SERVICE_ACCOUNT.JSON
-  # report_state: true
+google_assistant:
+  project_id: !secret google_assistant_project_id
+  service_account: !include SERVICE_ACCOUNT.JSON
+  report_state: true
   expose_by_default: false
   entity_config:
     input_boolean.aleksander_focus:
