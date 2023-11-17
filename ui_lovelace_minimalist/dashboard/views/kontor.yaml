@@ -56,16 +56,6 @@ cards:
         cards:
         - type: "custom:button-card"
           template: card_light
-          entity: light.rgb_paere_2
-          variables:
-            ulm_card_light_enable_slider: true
-            ulm_card_light_enable_color: true
-            ulm_card_light_enable_collapse: true
-            ulm_card_light_enable_popup: false
-            ulm_card_light_name: "Skrivebord"
-            ulm_card_light_icon: mdi:desk
-        - type: "custom:button-card"
-          template: card_light
           entity: light.elgato_cw31j1a04120
           variables:
             ulm_card_light_enable_slider: true
@@ -128,6 +118,16 @@ cards:
         ulm_card_light_enable_popup: false
         ulm_card_light_name: "Astrids lampe"
         ulm_card_light_icon: mdi:cloud
+    - type: "custom:button-card"
+      template: card_light
+      entity: light.arkitektlampe
+      variables:
+        ulm_card_light_enable_slider: false
+        ulm_card_light_enable_color: true
+        ulm_card_light_enable_collapse: true
+        ulm_card_light_enable_popup: false
+        ulm_card_light_name: "Arkitektlampe"
+        ulm_card_light_icon: mdi:desk-lamp
 
   - type: vertical-stack
     cards:

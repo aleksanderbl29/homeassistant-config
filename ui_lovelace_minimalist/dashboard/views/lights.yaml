@@ -26,7 +26,7 @@ cards:
       - type: "custom:button-card"
         template: card_title
         name: "Lys i hele lejligheden"
-        label: "Aleksanders Værelse"
+        label: "Kontor"
       - type: "custom:button-card"
         color_type: blank-card
       - type: 'custom:button-card'
@@ -39,8 +39,72 @@ cards:
           service: script.turn_on
           service_data:
             entity_id: script.turn_off_all_lights
-    - type: horizontal-stack
+    - type: vertical-stack
       cards:
+        - type: "custom:button-card"
+          template: card_title
+          name: Kontor
+          label: Aleksanders Skrivebord
+
+        - type: vertical-stack
+          cards:
+          - type: "custom:button-card"
+            template: card_input_boolean
+            entity: input_boolean.aleksander_focus
+            name: Focus mode
+
+          - type: horizontal-stack
+            cards:
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.skrivebord_venstre
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_name: "Venstre"
+                ulm_card_light_icon: hue:play-bar-v
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.skrivebord_vindue
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_name: "Vindue"
+                ulm_card_light_icon: hue:play-bar
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.skrivebord_hojre
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_name: "Højre"
+                ulm_card_light_icon: hue:play-bar-v
+          - type: horizontal-stack
+            cards:
+            - type: "custom:button-card"
+              template: card_light
+              entity: light.elgato_cw31j1a04120
+              variables:
+                ulm_card_light_enable_slider: true
+                ulm_card_light_enable_color: true
+                ulm_card_light_enable_collapse: true
+                ulm_card_light_enable_popup: false
+                ulm_card_light_name: "Keylight"
+                ulm_card_light_icon: mdi:spotlight
+
+    - type: vertical-stack
+      cards:
+      - type: "custom:button-card"
+        template: card_title
+        label: "Lys"
+      - type: horizontal-stack
+        cards:
         - type: vertical-stack
           cards:
             - type: custom:gap-card
@@ -77,61 +141,26 @@ cards:
                 ulm_card_light_enable_popup: false
                 ulm_card_light_icon: hue:bulb-filament
                 ulm_card_light_name: "Højre"
-
-    - type: horizontal-stack
-      cards:
-        - type: "custom:button-card"
-          template: card_light
-          entity: light.skrivebord_venstre
-          variables:
-            ulm_card_light_enable_slider: true
-            ulm_card_light_enable_color: true
-            ulm_card_light_enable_collapse: true
-            ulm_card_light_enable_popup: false
-            ulm_card_light_name: "Venstre"
-            ulm_card_light_icon: hue:play-bar-v
-        - type: "custom:button-card"
-          template: card_light
-          entity: light.skrivebord_vindue
-          variables:
-            ulm_card_light_enable_slider: true
-            ulm_card_light_enable_color: true
-            ulm_card_light_enable_collapse: true
-            ulm_card_light_enable_popup: false
-            ulm_card_light_name: "Vindue"
-            ulm_card_light_icon: hue:play-bar
-        - type: "custom:button-card"
-          template: card_light
-          entity: light.skrivebord_hojre
-          variables:
-            ulm_card_light_enable_slider: true
-            ulm_card_light_enable_color: true
-            ulm_card_light_enable_collapse: true
-            ulm_card_light_enable_popup: false
-            ulm_card_light_name: "Højre"
-            ulm_card_light_icon: hue:play-bar-v
-    - type: horizontal-stack
-      cards:
-        - type: "custom:button-card"
-          template: card_light
-          entity: light.rgb_paere_2
-          variables:
-            ulm_card_light_enable_slider: true
-            ulm_card_light_enable_color: true
-            ulm_card_light_enable_collapse: true
-            ulm_card_light_enable_popup: false
-            ulm_card_light_name: "Skrivebord"
-            ulm_card_light_icon: mdi:desk
-        - type: "custom:button-card"
-          template: card_light
-          entity: light.astrids_lampe
-          variables:
-            ulm_card_light_enable_slider: false
-            ulm_card_light_enable_color: true
-            ulm_card_light_enable_collapse: true
-            ulm_card_light_enable_popup: false
-            ulm_card_light_name: "Astrids lampe"
-            ulm_card_light_icon: mdi:cloud
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.astrids_lampe
+        variables:
+          ulm_card_light_enable_slider: false
+          ulm_card_light_enable_color: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: false
+          ulm_card_light_name: "Astrids lampe"
+          ulm_card_light_icon: mdi:cloud
+      - type: "custom:button-card"
+        template: card_light
+        entity: light.arkitektlampe
+        variables:
+          ulm_card_light_enable_slider: false
+          ulm_card_light_enable_color: true
+          ulm_card_light_enable_collapse: true
+          ulm_card_light_enable_popup: false
+          ulm_card_light_name: "Arkitektlampe"
+          ulm_card_light_icon: mdi:desk-lamp
 
     - type: "custom:button-card"
       template:
@@ -235,7 +264,7 @@ cards:
 
         - type: "custom:button-card"
           template: card_light
-          entity: light.arkitektlampe
+          entity: light.standerlampe
           variables:
             ulm_card_light_enable_slider: true
             ulm_card_light_enable_color: true

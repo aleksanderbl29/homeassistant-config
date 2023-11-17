@@ -212,7 +212,7 @@
       value_template: >
         {% set lights = [
             states.light.loftslampe_2,
-            states.light.arkitektlampe,
+            states.light.standerlampe,
             states.light.sofa_filament,
             ] %}
         {{ lights | selectattr('state','eq','on') | list | count }}
@@ -228,7 +228,7 @@
             states.light.vindueskarm_hojre,
             states.light.vindueskarm_venstre,
             states.light.loftslampe_2,
-            states.light.arkitektlampe,
+            states.light.standerlampe,
             states.light.sofa_filament,
             states.light.loftslampe_3,
             states.light.skab_lightstrip,

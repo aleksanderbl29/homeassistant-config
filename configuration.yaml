@@ -39,8 +39,8 @@ powercalc:
 ## Google Assistant
 google_assistant:
   project_id: !secret google_assistant_project_id
-  service_account: !include SERVICE_ACCOUNT.JSON
-  report_state: true
+  # service_account: !include SERVICE_ACCOUNT.JSON
+  # report_state: true
   expose_by_default: false
   entity_config:
     input_boolean.aleksander_focus:
@@ -59,8 +59,6 @@ google_assistant:
     input_boolean.astrid_hjemme:
       name: Astrid Hjemme
 
-
-
 template:
   - sensor:
     - name: "Energy statistics"
@@ -72,9 +70,8 @@ template:
       attributes:
         last_reset: '2001-01-01T00:00:00+00:00'
 
-
 ## Nordpool
-# nordpool:
+nordpool:
 
 ## Adaptive lighting
 #adaptive_lighting:
@@ -102,10 +99,10 @@ anniversaries:
     count_up: true
 
 ## Spotcast
-# spotcast:
-#   sp_dc: !secret sp_dc
-#   sp_key: !secret sp_key
-#   country: DK
+spotcast:
+  sp_dc: !secret sp_dc
+  sp_key: !secret sp_key
+  country: DK
 
 
 http:

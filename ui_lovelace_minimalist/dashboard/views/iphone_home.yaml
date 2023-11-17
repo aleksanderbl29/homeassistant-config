@@ -149,7 +149,7 @@ cards:
           template: card_binary_sensor_alert
           variables:
             ulm_card_binary_sensor_alert: true
-            ulm_show_last_changed: true
+            ulm_card_binary_sensor_alert_show_last_changed: true
             ulm_card_binary_sensor_alert_name: Entre
             ulm_card_binary_sensor_alert_icon: mdi:coat-rack
           entity: binary_sensor.hue_motion_sensor_1_motion
@@ -157,7 +157,7 @@ cards:
           template: card_binary_sensor_alert
           variables:
             ulm_card_binary_sensor_alert: true
-            ulm_show_last_changed: true
+            ulm_card_binary_sensor_alert_show_last_changed: true
             ulm_card_binary_sensor_alert_name: Køkken
             ulm_card_binary_sensor_alert_icon: mdi:fridge
           entity: binary_sensor.hue_motion_sensor_1_motion_2

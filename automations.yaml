@@ -814,7 +814,7 @@
       scene_id: temp_hele_lejlighed
       snapshot_entities:
       - light.skab_lightstrip
-      - light.arkitektlampe
+      - light.standerlampe
       - light.loftslampe_3
       - light.loftslampe_2
       - light.loftslampe
@@ -1773,4 +1773,77 @@
     data: {}
     target:
       entity_id: light.ikea_askvader_1
+  mode: single
+- id: '1700126467711'
+  alias: KØKKEN - Bagtrappe spots tænder read skab
+  description: Når bagtrappe spots går fra unavailable til on vil de aktivere read
+    på køkken skab lightstrip
+  trigger:
+  - platform: state
+    entity_id:
+    - light.bagtrappe
+    from: unavailable
+  condition: []
+  action:
+  - service: scene.turn_on
+    data: {}
+    target:
+      entity_id: scene.kokken_read
+  mode: single
+- id: '1700253198830'
+  alias: ADMIN - DNS double outage restart modem
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.cloudflare_dns
+    from: 'on'
+    to: 'off'
+  - platform: state
+    entity_id:
+    - binary_sensor.quad9_dns
+    from: 'on'
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.cloudflare_dns
+    state: 'off'
+  - condition: state
+    entity_id: binary_sensor.quad9_dns
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.modem_restart
+    state: 'off'
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.ikea_askvader_1
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 3
+      milliseconds: 0
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.ikea_askvader_1
+  - service: notify.mobile_app_aleksanders_iphone_13
+    data:
+      title: "\U0001F4C9 Internet \U0001F4C9"
+      message: DNS fejlet. Modem er genstartet
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.modem_restart
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.cloudflare_dns
+      from: 'off'
+      to: 'on'
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.modem_restart
   mode: single

@@ -63,3 +63,20 @@
 #    true
 #  {% endif %}
 #{% endfor %}
+
+# Example configuration.yaml entry to ping host 192.168.0.1 with 2 packets every 30 seconds.
+- platform: ping
+  host: 192.168.207.1
+  name: "Gateway - 207"
+  count: 2
+  scan_interval: 30
+- platform: ping
+  host: 1.1.1.1
+  name: "Cloudflare DNS"
+  count: 2
+  scan_interval: 16
+- platform: ping
+  host: 9.9.9.9
+  name: "Quad9 DNS"
+  count: 2
+  scan_interval: 17
